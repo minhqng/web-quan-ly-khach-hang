@@ -1,0 +1,129 @@
+.podium-cluster {
+    align-items: end;
+    display: grid;
+    gap: var(--space-4);
+    grid-template-areas:
+        "rank1 rank1"
+        "rank2 rank3";
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.podium-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    min-height: 260px;
+    overflow: hidden;
+    padding: var(--space-4);
+}
+
+.podium-card--rank-1 {
+    border-color: #bfdbfe;
+    box-shadow: var(--shadow-md);
+    grid-area: rank1;
+    justify-self: center;
+    max-width: 500px;
+    min-height: 312px;
+    width: 100%;
+}
+
+.podium-card--rank-2 {
+    grid-area: rank2;
+}
+
+.podium-card--rank-3 {
+    grid-area: rank3;
+}
+
+.podium-card-topline,
+.customer-type-pill {
+    align-items: center;
+    display: flex;
+    gap: var(--space-2);
+}
+
+.podium-rank {
+    background: var(--color-ink);
+    border-radius: 999px;
+    color: #fff;
+    font-weight: 700;
+    padding: 5px 10px;
+}
+
+.customer-type-pill {
+    color: var(--color-muted);
+    font-size: 0.84rem;
+    font-weight: 700;
+}
+
+.customer-type-pill span {
+    background: var(--customer-type-color);
+    border-radius: 999px;
+    height: 10px;
+    width: 10px;
+}
+
+.podium-card h3 {
+    font-size: 1.12rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.podium-company {
+    color: var(--color-muted);
+    margin: 0;
+    min-height: 24px;
+}
+
+.podium-score {
+    color: var(--color-primary-dark);
+    font-size: 2.45rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.podium-meta {
+    display: grid;
+    gap: var(--space-3);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 0;
+}
+
+.podium-meta dt {
+    color: var(--color-muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.podium-meta dd {
+    font-size: 0.92rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.podium-base {
+    background: var(--customer-type-color);
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    height: 12px;
+    margin: auto calc(var(--space-4) * -1) calc(var(--space-4) * -1);
+    opacity: 0.9;
+}
+
+.podium-card--rank-1 .podium-base {
+    height: 18px;
+}
+
+@media (max-width: 760px) {
+    .podium-cluster {
+        grid-template-areas:
+            "rank1"
+            "rank2"
+            "rank3";
+        grid-template-columns: 1fr;
+    }
+
+    .podium-meta {
+        grid-template-columns: 1fr;
+    }
+}

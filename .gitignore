@@ -1,0 +1,20 @@
+# Local environment
+.env
+.env.*
+
+# Logs
+nhat-ky/*.log
+nhat-ky/*.txt
+!nhat-ky/README.md
+!nhat-ky/.gitignore
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Temporary exports
+*.zip
+*.bak
+*.tmp

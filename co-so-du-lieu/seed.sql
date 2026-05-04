@@ -1,0 +1,4 @@
+-- File seed rieng da duoc thay bang bootstrap day du:
+-- co-so-du-lieu/khoi-tao-co-so-du-lieu.sql
+--
+-- Du lieu mau nam trong cung file bootstrap de sinh vien chi can import mot lan.

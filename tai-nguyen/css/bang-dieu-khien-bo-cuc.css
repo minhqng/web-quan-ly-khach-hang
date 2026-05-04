@@ -1,0 +1,148 @@
+.dashboard-page {
+    width: 100%;
+}
+
+.dashboard-header {
+    align-items: center;
+}
+
+.dashboard-scope {
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    display: grid;
+    gap: 2px;
+    min-width: 176px;
+    padding: var(--space-3) var(--space-4);
+}
+
+.dashboard-scope span,
+.dashboard-scope small {
+    color: var(--color-muted);
+    font-size: 0.78rem;
+}
+
+.dashboard-board {
+    align-items: start;
+    display: grid;
+    gap: var(--space-4);
+    grid-template-areas:
+        "kpis podium upcoming"
+        "overdue podium activity";
+    grid-template-columns: minmax(220px, 0.82fr) minmax(430px, 1.36fr) minmax(260px, 0.94fr);
+}
+
+.dashboard-kpi-column {
+    display: grid;
+    gap: var(--space-3);
+    grid-area: kpis;
+}
+
+.dashboard-kpi-card,
+.dashboard-panel,
+.podium-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.dashboard-kpi-card {
+    display: grid;
+    gap: var(--space-2);
+    min-height: 118px;
+    padding: var(--space-4);
+}
+
+.dashboard-kpi-card--primary {
+    border-left: 4px solid var(--color-primary);
+}
+
+.dashboard-kpi-card--accent {
+    border-left: 4px solid var(--color-accent);
+}
+
+.dashboard-kpi-card--success {
+    border-left: 4px solid var(--color-success);
+}
+
+.dashboard-kpi-card--danger {
+    border-left: 4px solid var(--color-danger);
+}
+
+.dashboard-kpi-label,
+.dashboard-kpi-note {
+    color: var(--color-muted);
+    font-size: 0.86rem;
+}
+
+.dashboard-kpi-value {
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.dashboard-centerpiece {
+    grid-area: podium;
+    min-width: 0;
+}
+
+.dashboard-section-heading,
+.dashboard-panel-header {
+    align-items: center;
+    display: flex;
+    gap: var(--space-3);
+    justify-content: space-between;
+    margin-bottom: var(--space-3);
+}
+
+.dashboard-section-heading--center {
+    text-align: center;
+}
+
+.dashboard-section-heading h2,
+.dashboard-panel-header h2 {
+    font-size: 1.12rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.dashboard-soft-label {
+    background: var(--color-primary-soft);
+    border-radius: 999px;
+    color: var(--color-primary-dark);
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 6px 10px;
+}
+
+@media (max-width: 1180px) {
+    .dashboard-board {
+        grid-template-areas:
+            "kpis kpis"
+            "podium podium"
+            "upcoming overdue"
+            "activity activity";
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .dashboard-kpi-column {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 760px) {
+    .dashboard-board,
+    .dashboard-kpi-column {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-board {
+        grid-template-areas:
+            "kpis"
+            "podium"
+            "upcoming"
+            "overdue"
+            "activity";
+    }
+}

@@ -1,0 +1,5 @@
+-- File schema rieng da duoc thay bang bootstrap day du:
+-- co-so-du-lieu/khoi-tao-co-so-du-lieu.sql
+--
+-- Import file do trong phpMyAdmin de tao database, 5 bang chinh,
+-- khoa ngoai, indexes va du lieu mau.
