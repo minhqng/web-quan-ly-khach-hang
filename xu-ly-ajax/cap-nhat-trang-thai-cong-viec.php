@@ -12,6 +12,13 @@ if (!la_post()) {
     ], 405);
 }
 
+if (!csrf_token_hop_le()) {
+    tra_ve_json([
+        'thanh_cong' => false,
+        'thong_bao' => 'Phiên biểu mẫu không hợp lệ. Vui lòng tải lại trang.',
+    ], 419);
+}
+
 $id = max(0, (int) gia_tri_post('id', 0));
 $trangThai = (string) gia_tri_post('status', '');
 $duLieu = $id > 0 ? cap_nhat_trang_thai_cong_viec($id, $trangThai) : null;

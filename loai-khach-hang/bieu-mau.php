@@ -8,7 +8,8 @@ $nhanNut = $nhanNut ?? 'Lưu thông tin';
 $duongDanHuy = $duongDanHuy ?? 'loai-khach-hang/';
 $coLoi = static fn (string $truong): string => isset($loi[$truong]) ? ' is-invalid' : '';
 ?>
-<form method="post" class="surface-card type-form" novalidate>
+<form method="post" class="surface-card type-form">
+    <?= csrf_input() ?>
     <div class="mb-4">
         <p class="eyebrow mb-2">Thông tin cấu hình</p>
         <h2 class="card-title mb-1"><?= e($tieuDeBieuMau) ?></h2>

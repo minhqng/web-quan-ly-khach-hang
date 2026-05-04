@@ -1,0 +1,200 @@
+.page-header {
+    margin-bottom: var(--space-6);
+}
+
+.page-title {
+    letter-spacing: 0;
+    max-width: 980px;
+}
+
+.page-subtitle {
+    line-height: 1.65;
+}
+
+.app-main {
+    gap: var(--space-6);
+}
+
+.surface-card,
+.table-card,
+.stat-card,
+.dashboard-kpi-card,
+.dashboard-panel,
+.podium-card,
+.auth-card,
+.placeholder-panel {
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
+}
+
+.surface-card:hover,
+.stat-card:hover,
+.dashboard-kpi-card:hover,
+.dashboard-panel:hover,
+.podium-card:hover {
+    border-color: #cbd5e1;
+}
+
+.card-title {
+    line-height: 1.35;
+}
+
+.btn,
+.sidebar-link,
+.report-nav-link,
+.follow-up-tab,
+.form-control,
+.form-select,
+.badge {
+    transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast), opacity var(--transition-fast);
+}
+
+.btn {
+    align-items: center;
+    display: inline-flex;
+    justify-content: center;
+    line-height: 1.2;
+    padding-inline: var(--space-4);
+}
+
+.btn-sm {
+    min-height: 34px;
+    padding-inline: var(--space-3);
+}
+
+.btn.disabled,
+.btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.52;
+}
+
+.badge {
+    min-height: 26px;
+    white-space: nowrap;
+}
+
+.table-card {
+    box-shadow: var(--shadow-sm);
+}
+
+.table thead th {
+    background: var(--color-surface-soft);
+    border-bottom-color: var(--color-line);
+    white-space: nowrap;
+}
+
+.table tbody tr {
+    transition: background-color var(--transition-fast);
+}
+
+.table tbody tr:hover {
+    background: var(--color-hover);
+}
+
+.table td,
+.table th {
+    vertical-align: middle;
+}
+
+.table td.number,
+.table th.number,
+.table td.text-end,
+.table th.text-end {
+    font-variant-numeric: tabular-nums;
+}
+
+.table-empty-state,
+.table td.text-center.text-muted.py-5 {
+    background: var(--color-surface);
+    color: var(--color-muted) !important;
+    font-size: 0.95rem;
+    padding: var(--space-7) var(--space-4) !important;
+}
+
+.empty-state,
+.empty-state-inline {
+    background: var(--color-surface-soft);
+    border: 1px dashed #cbd5e1;
+    border-radius: var(--radius-md);
+    color: var(--color-muted);
+    padding: var(--space-5);
+}
+
+.empty-state h2,
+.empty-state h3,
+.empty-state-inline strong {
+    color: var(--color-ink);
+}
+
+.empty-state-inline {
+    display: grid;
+    gap: var(--space-1);
+}
+
+.empty-state-inline p {
+    margin: 0;
+}
+
+.form-label {
+    margin-bottom: var(--space-2);
+}
+
+.form-control::placeholder {
+    color: #94a3b8;
+}
+
+.customer-filter-bar,
+.interaction-filter,
+.follow-up-form,
+.customer-form,
+.interaction-form {
+    box-shadow: var(--shadow-sm);
+}
+
+.customer-form-actions,
+.interaction-form-actions,
+.follow-up-form-actions {
+    background: linear-gradient(180deg, transparent, rgba(248, 250, 252, 0.72));
+}
+
+.table-card.is-loading {
+    position: relative;
+}
+
+.table-card.is-loading::after {
+    animation: crm-loading-sweep 1s linear infinite;
+    background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.09), transparent);
+    content: "";
+    inset: 0;
+    pointer-events: none;
+    position: absolute;
+}
+
+@keyframes crm-loading-sweep {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(100%);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+@media (max-width: 720px) {
+    .page-header {
+        margin-bottom: var(--space-5);
+    }
+
+    .page-header > .btn,
+    .follow-up-nav > .btn,
+    .customer-pagination .btn {
+        width: 100%;
+    }
+}

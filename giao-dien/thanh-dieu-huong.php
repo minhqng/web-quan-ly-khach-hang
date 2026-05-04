@@ -11,6 +11,7 @@
                 <span class="navbar-user"><?= e($nguoiDung['ho_ten'] ?: $nguoiDung['ten_dang_nhap']) ?></span>
                 <span class="navbar-role"><?= e($vaiTro) ?></span>
                 <form class="d-inline" method="post" action="<?= e(duong_dan('dang-xuat.php')) ?>">
+                    <?= csrf_input() ?>
                     <button class="btn btn-outline-light btn-sm" type="submit">Đăng xuất</button>
                 </form>
             <?php else: ?>

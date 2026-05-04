@@ -93,8 +93,11 @@ function kiem_tra_du_lieu_tuong_tac(array $duLieu, bool $choTaoCongViec = true):
         $loi['result'] = 'Kết quả không được vượt quá 150 ký tự.';
     }
 
-    if ($duLieu['interaction_at'] === '' || strtotime($duLieu['interaction_at']) === false) {
+    $thoiGianTuongTac = $duLieu['interaction_at'] !== '' ? strtotime($duLieu['interaction_at']) : false;
+    if ($thoiGianTuongTac === false) {
         $loi['interaction_at'] = 'Thời gian tương tác không hợp lệ.';
+    } elseif ($thoiGianTuongTac > time() + 300) {
+        $loi['interaction_at'] = 'Thời gian tương tác không được ở tương lai.';
     }
 
     return $choTaoCongViec ? array_merge($loi, kiem_tra_cong_viec_tu_tuong_tac($duLieu)) : $loi;

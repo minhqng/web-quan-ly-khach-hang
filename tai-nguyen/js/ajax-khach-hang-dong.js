@@ -56,11 +56,13 @@ function rowActions(customer) {
     const wrap = document.createElement('div');
     wrap.className = 'customer-row-actions';
     wrap.append(actionLink('Xem', customer.detail_url, 'btn-outline-primary'));
-    if (customer.is_deleted) {
+    if (customer.is_deleted && customer.can_manage_delete) {
         wrap.append(actionForm(customer.restore_url, customer.id, 'Khôi phục', 'btn-outline-success'));
-    } else {
+    } else if (!customer.is_deleted) {
         wrap.append(actionLink('Sửa', customer.edit_url, 'btn-outline-secondary'));
-        wrap.append(actionForm(customer.soft_delete_url, customer.id, 'Xóa mềm', 'btn-outline-danger', 'Xóa mềm khách hàng này khỏi danh sách đang chăm sóc?'));
+        if (customer.can_manage_delete) {
+            wrap.append(actionForm(customer.soft_delete_url, customer.id, 'Xóa mềm', 'btn-outline-danger', 'Xóa mềm khách hàng này khỏi danh sách đang chăm sóc?'));
+        }
     }
     return wrap;
 }
@@ -80,6 +82,10 @@ function actionForm(action, id, label, styleClass, confirmMessage = '') {
     input.type = 'hidden';
     input.name = 'id';
     input.value = id;
+    const csrfInput = document.createElement('input');
+    csrfInput.type = 'hidden';
+    csrfInput.name = 'csrf_token';
+    csrfInput.value = window.APP_CSRF_TOKEN || '';
     const button = textElement('button', label);
     button.type = 'submit';
     button.className = `btn btn-sm ${styleClass}`;
@@ -88,6 +94,6 @@ function actionForm(action, id, label, styleClass, confirmMessage = '') {
             if (!window.confirm(confirmMessage)) event.preventDefault();
         });
     }
-    form.append(input, button);
+    form.append(csrfInput, input, button);
     return form;
 }

@@ -9,7 +9,8 @@ $hienThiTaoCongViec = $hienThiTaoCongViec ?? false;
 $coLoi = static fn (string $truong): string => isset($loi[$truong]) ? ' is-invalid' : '';
 $nhanUuTien = ['high' => 'Cao', 'medium' => 'Vừa', 'low' => 'Thấp'];
 ?>
-<form method="post" class="surface-card interaction-form" novalidate>
+<form method="post" class="surface-card interaction-form">
+    <?= csrf_input() ?>
     <div class="interaction-form-heading">
         <p class="eyebrow">Lịch sử chăm sóc</p>
         <h2 class="card-title mb-1"><?= e($tieuDeBieuMau) ?></h2>
@@ -39,13 +40,13 @@ $nhanUuTien = ['high' => 'Cao', 'medium' => 'Vừa', 'low' => 'Thấp'];
         </div>
         <div class="col-md-6 col-lg-4">
             <label class="form-label" for="interaction_at">Thời gian</label>
-            <input class="form-control<?= e($coLoi('interaction_at')) ?>" id="interaction_at" name="interaction_at" type="datetime-local" value="<?= e($duLieu['interaction_at']) ?>">
+            <input class="form-control<?= e($coLoi('interaction_at')) ?>" id="interaction_at" name="interaction_at" required type="datetime-local" value="<?= e($duLieu['interaction_at']) ?>">
             <?php if (isset($loi['interaction_at'])): ?><div class="invalid-feedback"><?= e($loi['interaction_at']) ?></div><?php endif; ?>
         </div>
 
         <div class="col-lg-7">
             <label class="form-label" for="title">Tiêu đề <span class="text-danger">*</span></label>
-            <input class="form-control<?= e($coLoi('title')) ?>" id="title" maxlength="150" name="title" value="<?= e($duLieu['title']) ?>">
+            <input class="form-control<?= e($coLoi('title')) ?>" id="title" maxlength="150" name="title" required value="<?= e($duLieu['title']) ?>">
             <?php if (isset($loi['title'])): ?><div class="invalid-feedback"><?= e($loi['title']) ?></div><?php endif; ?>
         </div>
         <div class="col-lg-5">
@@ -55,7 +56,7 @@ $nhanUuTien = ['high' => 'Cao', 'medium' => 'Vừa', 'low' => 'Thấp'];
         </div>
         <div class="col-12">
             <label class="form-label" for="content">Nội dung trao đổi <span class="text-danger">*</span></label>
-            <textarea class="form-control<?= e($coLoi('content')) ?>" id="content" name="content" rows="5"><?= e($duLieu['content']) ?></textarea>
+            <textarea class="form-control<?= e($coLoi('content')) ?>" id="content" name="content" required rows="5"><?= e($duLieu['content']) ?></textarea>
             <?php if (isset($loi['content'])): ?><div class="invalid-feedback"><?= e($loi['content']) ?></div><?php endif; ?>
         </div>
     </div>

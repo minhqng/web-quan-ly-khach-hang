@@ -32,4 +32,4 @@ Dự án môn Lập trình Web: website quản lý khách hàng bằng PHP thu�
 - Đặt tên file/thư mục bằng tiếng Việt không dấu, kebab-case.
 - Giao diện hiển thị bằng tiếng Việt.
 - CSDL cần dùng `utf8mb4` và collation tiếng Việt khi triển khai schema.
-- Các module chính đang được xây theo từng pha; dashboard, loại khách hàng, khách hàng, tương tác và AJAX trọng điểm đã dùng dữ liệu thật từ 5 bảng lõi.
+- Các module chính đang được xây theo từng pha; dashboard, loại khách hàng, khách hàng, tương tác, công việc theo dõi, báo cáo và AJAX trọng điểm đã dùng dữ liệu thật từ 5 bảng lõi.

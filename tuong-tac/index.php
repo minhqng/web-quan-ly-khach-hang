@@ -64,6 +64,7 @@ require __DIR__ . '/../giao-dien/dau-trang.php';
                     <div class="interaction-actions">
                         <a class="btn btn-sm btn-outline-secondary" href="<?= e(duong_dan('tuong-tac/sua.php?id=' . $tuongTac['id'])) ?>">Sửa</a>
                         <form action="<?= e(duong_dan('tuong-tac/xoa.php')) ?>" method="post">
+                            <?= csrf_input() ?>
                             <input type="hidden" name="id" value="<?= e($tuongTac['id']) ?>">
                             <button class="btn btn-sm btn-outline-danger" data-confirm-message="Xóa tương tác này khỏi lịch sử?" type="submit">Xóa</button>
                         </form>
@@ -73,7 +74,10 @@ require __DIR__ . '/../giao-dien/dau-trang.php';
         </article>
     <?php endforeach; ?>
     <?php if ($danhSachTuongTac === []): ?>
-        <p class="text-muted mb-0">Chưa có tương tác phù hợp.</p>
+        <div class="empty-state-inline">
+            <strong>Chưa có tương tác phù hợp</strong>
+            <p>Hãy ghi nhận cuộc gọi, email hoặc buổi gặp để hồ sơ chăm sóc có lịch sử rõ ràng.</p>
+        </div>
     <?php endif; ?>
 </section>
 <?php require __DIR__ . '/../giao-dien/cuoi-trang.php'; ?>

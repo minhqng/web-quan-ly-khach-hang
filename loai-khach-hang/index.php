@@ -72,6 +72,7 @@ require __DIR__ . '/../giao-dien/dau-trang.php';
                                 <a class="btn btn-sm btn-outline-primary" href="<?= e(duong_dan('loai-khach-hang/sua.php?id=' . $loai['id'])) ?>">Sửa</a>
                                 <?php if ($soKhach === 0 || $dangHoatDong): ?>
                                     <form method="post" action="<?= e(duong_dan('loai-khach-hang/xoa.php')) ?>">
+                                        <?= csrf_input() ?>
                                         <input type="hidden" name="id" value="<?= e($loai['id']) ?>">
                                         <button
                                             class="btn btn-sm btn-outline-danger"
@@ -88,7 +89,7 @@ require __DIR__ . '/../giao-dien/dau-trang.php';
                 <?php endforeach; ?>
                 <?php if ($danhSachLoai === []): ?>
                     <tr>
-                        <td class="text-center text-muted py-5" colspan="6">Chưa có loại khách hàng nào.</td>
+                        <td class="table-empty-state text-center text-muted py-5" colspan="6">Chưa có loại khách hàng nào. Hãy tạo loại đầu tiên để phân nhóm khách hàng.</td>
                     </tr>
                 <?php endif; ?>
             </tbody>

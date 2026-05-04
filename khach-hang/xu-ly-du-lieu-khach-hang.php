@@ -159,8 +159,13 @@ function kiem_tra_chi_tiet_khach_hang(array $duLieu): array
         $loi['gender'] = 'Giới tính không hợp lệ.';
     }
 
-    if ($duLieu['date_of_birth'] !== '' && strtotime($duLieu['date_of_birth']) === false) {
-        $loi['date_of_birth'] = 'Ngày sinh không hợp lệ.';
+    if ($duLieu['date_of_birth'] !== '') {
+        $ngaySinh = strtotime($duLieu['date_of_birth']);
+        if ($ngaySinh === false) {
+            $loi['date_of_birth'] = 'Ngày sinh không hợp lệ.';
+        } elseif ($ngaySinh > time()) {
+            $loi['date_of_birth'] = 'Ngày sinh không được lớn hơn ngày hiện tại.';
+        }
     }
 
     if (!array_key_exists($duLieu['source'], nhan_nguon_khach_hang())) {

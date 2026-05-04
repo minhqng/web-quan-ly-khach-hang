@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 require __DIR__ . '/../dung-chung/khoi-dong.php';
-require __DIR__ . '/../dung-chung/kiem-tra-dang-nhap.php';
+require __DIR__ . '/../dung-chung/kiem-tra-quyen-admin.php';
 require __DIR__ . '/ham-khach-hang.php';
 
 yeu_cau_post('khach-hang/');

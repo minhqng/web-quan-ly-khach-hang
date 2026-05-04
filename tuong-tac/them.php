@@ -12,6 +12,8 @@ $loi = [];
 $danhSachKhachHang = lay_lua_chon_khach_hang_tuong_tac($maKhachHang ?: null);
 
 if (la_post()) {
+    yeu_cau_csrf('tuong-tac/them.php' . ($maKhachHang ? '?customer_id=' . $maKhachHang : ''));
+
     $duLieu = lay_du_lieu_form_tuong_tac($_POST);
     $loi = kiem_tra_du_lieu_tuong_tac($duLieu, true);
 

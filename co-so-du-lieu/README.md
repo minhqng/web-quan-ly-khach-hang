@@ -1,12 +1,22 @@
 # Cơ sở dữ liệu
 
-Import file `khoi-tao-co-so-du-lieu.sql` bằng phpMyAdmin để tạo lại database `quanly_khachhang`, 5 bảng chính và dữ liệu mẫu.
+Import file `khoi-tao-co-so-du-lieu.sql` bằng phpMyAdmin để tạo lại database `quanly_khachhang`, 5 bảng chính và bộ dữ liệu demo tiếng Việt.
 
 ## Tài khoản demo
 
 - Admin: `admin` / `123456`
 - Nhân viên: `minhanh` / `123456`
 - Nhân viên: `quocbao` / `123456`
+- Nhân viên: `thutrang` / `123456`
+
+## Dữ liệu demo
+
+- 5 loại khách hàng: VIP, khách trung thành, khách tiềm năng, khách mới, tạm ngưng.
+- 12 hồ sơ khách hàng với tên, công ty, địa chỉ, ghi chú và nguồn khách bằng tiếng Việt.
+- Có một hồ sơ đã xóa mềm để kiểm thử trùng điện thoại/email và khôi phục.
+- Tương tác gồm gọi điện, email, gặp mặt, chat, Zalo, ghi chú.
+- Công việc có đủ trạng thái chờ xử lý, đang xử lý, hoàn thành, đã hủy và các việc quá hạn.
+- Top 3 dashboard được cân bằng để có thứ hạng rõ: An Phú, Minh Long Logistics, Khoa Tech.
 
 ## Ghi chú tương thích
 

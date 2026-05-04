@@ -123,24 +123,28 @@ require __DIR__ . '/../giao-dien/dau-trang.php';
                         <td>
                             <div class="customer-row-actions">
                                 <a class="btn btn-sm btn-outline-primary" href="<?= e(duong_dan('khach-hang/chi-tiet.php?id=' . $khachHang['id'])) ?>">Xem</a>
-                                <?php if ($khachHang['deleted_at']): ?>
+                                <?php if ($khachHang['deleted_at'] && la_admin()): ?>
                                     <form action="<?= e(duong_dan('khach-hang/khoi-phuc.php')) ?>" method="post">
+                                        <?= csrf_input() ?>
                                         <input type="hidden" name="id" value="<?= e($khachHang['id']) ?>">
                                         <button class="btn btn-sm btn-outline-success" type="submit">Khôi phục</button>
                                     </form>
-                                <?php else: ?>
+                                <?php elseif (!$khachHang['deleted_at']): ?>
                                     <a class="btn btn-sm btn-outline-secondary" href="<?= e(duong_dan('khach-hang/sua.php?id=' . $khachHang['id'])) ?>">Sửa</a>
-                                    <form action="<?= e(duong_dan('khach-hang/xoa-mem.php')) ?>" method="post">
-                                        <input type="hidden" name="id" value="<?= e($khachHang['id']) ?>">
-                                        <button class="btn btn-sm btn-outline-danger" data-confirm-message="Xóa mềm khách hàng này khỏi danh sách đang chăm sóc?" type="submit">Xóa mềm</button>
-                                    </form>
+                                    <?php if (la_admin()): ?>
+                                        <form action="<?= e(duong_dan('khach-hang/xoa-mem.php')) ?>" method="post">
+                                            <?= csrf_input() ?>
+                                            <input type="hidden" name="id" value="<?= e($khachHang['id']) ?>">
+                                            <button class="btn btn-sm btn-outline-danger" data-confirm-message="Xóa mềm khách hàng này khỏi danh sách đang chăm sóc?" type="submit">Xóa mềm</button>
+                                        </form>
+                                    <?php endif; ?>
                                 <?php endif; ?>
                             </div>
                         </td>
                     </tr>
                 <?php endforeach; ?>
                 <?php if ($danhSachKhachHang === []): ?>
-                    <tr><td class="text-center text-muted py-5" colspan="6">Không tìm thấy khách hàng phù hợp.</td></tr>
+                    <tr><td class="table-empty-state text-center text-muted py-5" colspan="6">Không tìm thấy khách hàng phù hợp. Hãy thử đổi từ khóa hoặc bộ lọc.</td></tr>
                 <?php endif; ?>
             </tbody>
         </table>

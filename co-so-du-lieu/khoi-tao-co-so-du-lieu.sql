@@ -240,72 +240,135 @@ DEALLOCATE PREPARE alter_tasks_stmt;
 
 -- ============================================================
 -- Demo seed data. Mat khau mac dinh cho moi tai khoan: 123456
+-- Dataset duoc thiet ke de dashboard, bao cao va Top 3 co y nghia.
+-- Trang thai "done" trong yeu cau demo duoc luu bang gia tri completed.
 -- ============================================================
 
 INSERT INTO `users`
     (`id`, `full_name`, `username`, `email`, `phone`, `password_hash`, `role`, `status`)
 VALUES
-    (1, 'Quản trị viên', 'admin', 'admin@example.com', '0900000000', '$2y$10$KJ7.uqFJcw3r24WLj6rEduHssNR3FcZe/S8UzLMfzzz5euNoPcl5W', 'admin', 'active'),
-    (2, 'Nguyễn Minh Anh', 'minhanh', 'minhanh@example.com', '0901111222', '$2y$10$KzwOoW0/2chTFxyaQl89/uGXZrnpk65MPKr6a1OiZjfuaePUwUZ2S', 'staff', 'active'),
-    (3, 'Trần Quốc Bảo', 'quocbao', 'quocbao@example.com', '0903333444', '$2y$10$Dq9H/w3xSYy6f.RizwJbZ.V8HG7xYQEGaWVLIY/PdnJx06Jr0suKW', 'staff', 'active');
+    (1, 'Quản trị viên hệ thống', 'admin', 'admin@quanlykhachhang.demo.vn', '0900 000 001', '$2y$10$KJ7.uqFJcw3r24WLj6rEduHssNR3FcZe/S8UzLMfzzz5euNoPcl5W', 'admin', 'active'),
+    (2, 'Nguyễn Minh Anh', 'minhanh', 'minhanh@quanlykhachhang.demo.vn', '0901 111 222', '$2y$10$KJ7.uqFJcw3r24WLj6rEduHssNR3FcZe/S8UzLMfzzz5euNoPcl5W', 'staff', 'active'),
+    (3, 'Trần Quốc Bảo', 'quocbao', 'quocbao@quanlykhachhang.demo.vn', '0902 222 333', '$2y$10$KJ7.uqFJcw3r24WLj6rEduHssNR3FcZe/S8UzLMfzzz5euNoPcl5W', 'staff', 'active'),
+    (4, 'Lê Thu Trang', 'thutrang', 'thutrang@quanlykhachhang.demo.vn', '0903 333 444', '$2y$10$KJ7.uqFJcw3r24WLj6rEduHssNR3FcZe/S8UzLMfzzz5euNoPcl5W', 'staff', 'active');
 
 INSERT INTO `customer_types`
     (`id`, `name`, `description`, `priority_score`, `color`, `is_active`)
 VALUES
-    (1, 'VIP', 'Khách hàng có giá trị cao, cần ưu tiên chăm sóc.', 90, '#b45309', 1),
-    (2, 'Tiềm năng', 'Khách hàng có nhu cầu rõ ràng, cần theo sát.', 70, '#2563eb', 1),
-    (3, 'Thường', 'Khách hàng phổ thông hoặc mới phát sinh nhu cầu.', 40, '#64748b', 1);
+    (1, 'VIP', 'Khách hàng giá trị cao, cần ưu tiên chăm sóc và báo cáo riêng.', 96, '#b45309', 1),
+    (2, 'Khách trung thành', 'Khách đã hợp tác ổn định, có lịch sử mua hoặc tương tác tốt.', 84, '#059669', 1),
+    (3, 'Khách tiềm năng', 'Khách có nhu cầu rõ ràng nhưng chưa chốt quyết định.', 72, '#2563eb', 1),
+    (4, 'Khách mới', 'Khách vừa phát sinh liên hệ, cần xác minh nhu cầu ban đầu.', 48, '#7c3aed', 1),
+    (5, 'Tạm ngưng', 'Khách chưa có nhu cầu hiện tại nhưng vẫn cần lưu lịch sử.', 20, '#64748b', 1);
 
 INSERT INTO `customers`
     (`id`, `customer_type_id`, `assigned_user_id`, `full_name`, `company_name`, `gender`, `date_of_birth`,
      `phone`, `phone_normalized`, `email`, `email_normalized`, `address`, `city`, `source`, `status`, `notes`, `deleted_at`)
 VALUES
-    (1, 1, 2, 'Nguyễn Thị Lan', 'Công ty TNHH An Phú', 'female', '1990-04-12',
-     '0901 111 222', '0901111222', 'lan.nguyen@anphu.example', 'lan.nguyen@anphu.example',
-     '12 Nguyễn Huệ, Quận 1', 'TP. Hồ Chí Minh', 'referral', 'active', 'Quan tâm gói chăm sóc khách hàng doanh nghiệp.', NULL),
-    (2, 1, 3, 'Trần Văn Minh', 'Minh Long Logistics', 'male', '1985-08-20',
-     '0902 222 333', '0902222333', 'minh.tran@minhlong.example', 'minh.tran@minhlong.example',
-     '45 Lê Lợi, Quận Hải Châu', 'Đà Nẵng', 'website', 'active', 'Khách hàng cần báo giá nhanh trong tuần.', NULL),
-    (3, 2, 2, 'Lê Hoàng Phúc', 'Phúc Gia Mart', 'male', '1992-11-03',
-     '0903 333 444', '0903333444', 'phuc.le@phucgia.example', 'phuc.le@phucgia.example',
-     '88 Trần Phú', 'Nha Trang', 'facebook', 'potential', 'Đang so sánh với nhà cung cấp khác.', NULL),
-    (4, 2, 3, 'Phạm Thu Hà', 'Hà An Studio', 'female', '1994-02-18',
-     '0904 444 555', '0904444555', 'ha.pham@haan.example', 'ha.pham@haan.example',
-     '21 Nguyễn Trãi', 'Hà Nội', 'phone', 'potential', 'Muốn được nhắc lịch tư vấn sau giờ hành chính.', NULL),
-    (5, 3, 2, 'Đặng Quốc Huy', NULL, 'male', NULL,
-     '0905 555 666', '0905555666', 'huy.dang@example.com', 'huy.dang@example.com',
-     '15 Võ Văn Tần', 'TP. Hồ Chí Minh', 'walk_in', 'active', 'Khách lẻ cần theo dõi nhu cầu định kỳ.', NULL),
-    (6, 3, 3, 'Võ Mai Chi', 'Chi Mai Beauty', 'female', '1989-06-30',
-     '0906 666 777', '0906666777', 'chi.vo@beauty.example', 'chi.vo@beauty.example',
-     '9 Phan Chu Trinh', 'Huế', 'other', 'inactive', 'Tạm ngưng nhu cầu, gọi lại sau một tháng.', NULL),
-    (7, 2, 2, 'Bùi Anh Khoa', 'Khoa Tech', 'male', '1991-12-01',
-     '0907 777 888', '0907777888', 'khoa.bui@khoatech.example', 'khoa.bui@khoatech.example',
-     '60 Cách Mạng Tháng 8', 'Cần Thơ', 'website', 'active', 'Có khả năng trở thành khách VIP nếu chốt hợp đồng.', NULL),
-    (8, 3, 2, 'Khách hàng cũ An Phú', 'Dữ liệu cũ', 'unknown', NULL,
-     '0901 111 222', '0901111222', 'lan.nguyen@anphu.example', 'lan.nguyen@anphu.example',
-     'Địa chỉ cũ', 'TP. Hồ Chí Minh', 'other', 'inactive', 'Bản ghi đã xóa mềm để kiểm thử tái sử dụng điện thoại/email.', DATE_SUB(NOW(), INTERVAL 30 DAY));
+    (1, 1, 2, 'Nguyễn Thị Lan Anh', 'Công ty TNHH An Phú', 'female', '1989-04-12',
+     '0912 345 678', '0912345678', 'lananh@anphu.demo.vn', 'lananh@anphu.demo.vn',
+     '12 Nguyễn Huệ, Quận 1', 'TP. Hồ Chí Minh', 'referral', 'active',
+     'Khách VIP quan tâm dashboard, báo cáo và quy trình chăm sóc sau bán hàng.', NULL),
+    (2, 2, 3, 'Trần Văn Minh', 'Minh Long Logistics', 'male', '1985-08-20',
+     '0938 222 333', '0938222333', 'minh@minhlong.demo.vn', 'minh@minhlong.demo.vn',
+     '45 Lê Lợi, Quận Hải Châu', 'Đà Nẵng', 'website', 'active',
+     'Khách trung thành, thường phản hồi nhanh và có khả năng mở rộng hợp đồng.', NULL),
+    (3, 3, 2, 'Bùi Anh Khoa', 'Khoa Tech', 'male', '1991-12-01',
+     '0907 777 888', '0907777888', 'khoa@khoatech.demo.vn', 'khoa@khoatech.demo.vn',
+     '60 Cách Mạng Tháng 8', 'Cần Thơ', 'website', 'potential',
+     'Đang so sánh giữa hai phương án, cần chứng minh hiệu quả quản lý công việc.', NULL),
+    (4, 3, 4, 'Phạm Thu Hà', 'Hà An Studio', 'female', '1994-02-18',
+     '0904 444 555', '0904444555', 'ha@haanstudio.demo.vn', 'ha@haanstudio.demo.vn',
+     '21 Nguyễn Trãi, Thanh Xuân', 'Hà Nội', 'phone', 'potential',
+     'Muốn được gọi sau giờ hành chính, dễ chuyển đổi nếu demo rõ quy trình.', NULL),
+    (5, 2, 4, 'Võ Mai Chi', 'Chi Mai Beauty', 'female', '1989-06-30',
+     '0906 666 777', '0906666777', 'chi@chimaibeauty.demo.vn', 'chi@chimaibeauty.demo.vn',
+     '9 Phan Chu Trinh', 'Huế', 'facebook', 'active',
+     'Khách trung thành, cần theo dõi lịch chăm sóc định kỳ theo mùa.', NULL),
+    (6, 4, 2, 'Đặng Quốc Huy', 'Huy Foods', 'male', '1993-03-09',
+     '0905 555 666', '0905555666', 'huy@huyfoods.demo.vn', 'huy@huyfoods.demo.vn',
+     '15 Võ Văn Tần, Quận 3', 'TP. Hồ Chí Minh', 'walk_in', 'active',
+     'Khách mới ghé trực tiếp, cần xác nhận nhu cầu quản lý khách mua lẻ.', NULL),
+    (7, 3, 3, 'Lê Hoàng Phúc', 'Phúc Gia Mart', 'male', '1992-11-03',
+     '0903 333 444', '0903333444', 'phuc@phucgiamart.demo.vn', 'phuc@phucgiamart.demo.vn',
+     '88 Trần Phú', 'Nha Trang', 'facebook', 'potential',
+     'Có nhu cầu thật nhưng còn chờ duyệt ngân sách.', NULL),
+    (8, 4, 3, 'Nguyễn Đức Tài', 'Tài Nam Coffee', 'male', '1988-10-25',
+     '0918 888 999', '0918888999', 'tai@tainamcoffee.demo.vn', 'tai@tainamcoffee.demo.vn',
+     '32 Hai Bà Trưng', 'Đà Lạt', 'other', 'active',
+     'Khách mới cần tư vấn quy trình quản lý khách hàng thân thiết.', NULL),
+    (9, 4, 4, 'Hoàng Yến Nhi', 'Nhi Boutique', 'female', '1996-07-14',
+     '0981 234 567', '0981234567', 'nhi@nhiboutique.demo.vn', 'nhi@nhiboutique.demo.vn',
+     '18 Lý Tự Trọng', 'Hải Phòng', 'facebook', 'potential',
+     'Khách mới từ mạng xã hội, cần kiểm tra lại nhu cầu thật.', NULL),
+    (10, 2, 2, 'Phan Gia Hân', 'Hân Edu', 'female', '1987-01-22',
+     '0977 111 222', '0977111222', 'han@hanedu.demo.vn', 'han@hanedu.demo.vn',
+     '5 Nguyễn Văn Cừ', 'Hà Nội', 'referral', 'active',
+     'Khách trung thành nhưng mới bắt đầu trao đổi thêm nhu cầu mới.', NULL),
+    (11, 5, 3, 'Đỗ Quốc Dũng', 'Dũng Auto', 'male', '1984-09-05',
+     '0966 222 333', '0966222333', 'dung@dungauto.demo.vn', 'dung@dungauto.demo.vn',
+     '101 Nguyễn Văn Linh', 'Đà Nẵng', 'phone', 'inactive',
+     'Tạm ngưng nhu cầu, vẫn cần nhắc lại sau một tháng.', NULL),
+    (12, 4, 2, 'Bản ghi cũ An Phú', 'Dữ liệu đã gộp', 'unknown', NULL,
+     '0912 345 678', '0912345678', 'lananh@anphu.demo.vn', 'lananh@anphu.demo.vn',
+     'Địa chỉ cũ trước khi chuẩn hóa', 'TP. Hồ Chí Minh', 'other', 'inactive',
+     'Bản ghi đã xóa mềm để kiểm thử trùng điện thoại/email và khôi phục.', DATE_SUB(NOW(), INTERVAL 35 DAY));
 
 INSERT INTO `interactions`
     (`customer_id`, `user_id`, `interaction_type`, `title`, `content`, `result`, `interaction_at`)
 VALUES
-    (1, 2, 'meeting', 'Gặp tư vấn lần đầu', 'Khách quan tâm gói chăm sóc khách hàng cho đội bán hàng.', 'Cần gửi demo và báo giá chi tiết.', DATE_SUB(NOW(), INTERVAL 6 DAY)),
-    (1, 2, 'call', 'Gọi xác nhận nhu cầu', 'Khách muốn xem demo dashboard và báo cáo.', 'Hẹn chuẩn bị demo Top 3 khách hàng.', DATE_SUB(NOW(), INTERVAL 2 DAY)),
-    (2, 3, 'email', 'Gửi báo giá sơ bộ', 'Đã gửi bảng giá và hẹn phản hồi trong tuần.', 'Chờ khách xác nhận ngân sách.', DATE_SUB(NOW(), INTERVAL 3 DAY)),
-    (3, 2, 'chat', 'Trao đổi qua chat', 'Khách hỏi về chính sách hỗ trợ sau triển khai.', 'Gửi tài liệu hỗ trợ sau bán hàng.', DATE_SUB(NOW(), INTERVAL 1 DAY)),
-    (4, 3, 'call', 'Gọi nhắc lịch tư vấn', 'Khách đề nghị gọi lại sau 19h.', 'Cần gọi lại ngoài giờ hành chính.', DATE_SUB(NOW(), INTERVAL 4 DAY)),
-    (5, 2, 'note', 'Ghi chú tại quầy', 'Khách cần quản lý danh bạ khách mua lẻ.', 'Theo dõi nhu cầu định kỳ.', DATE_SUB(NOW(), INTERVAL 10 DAY)),
-    (7, 2, 'meeting', 'Demo nhanh tính năng', 'Khách đánh giá cao phần theo dõi công việc.', 'Có cơ hội nâng cấp lên nhóm VIP.', DATE_SUB(NOW(), INTERVAL 1 DAY));
+    (1, 2, 'meeting', 'Gặp tư vấn quy trình quản lý', 'Khách trình bày nhu cầu quản lý khách doanh nghiệp và muốn xem dashboard tổng quan.', 'Thống nhất chuẩn bị demo theo dữ liệu ngành dịch vụ.', DATE_SUB(NOW(), INTERVAL 16 DAY)),
+    (1, 2, 'email', 'Gửi tài liệu giải pháp', 'Đã gửi tài liệu mô tả quy trình phân loại khách VIP và chăm sóc sau bán hàng.', 'Khách phản hồi tích cực.', DATE_SUB(NOW(), INTERVAL 12 DAY)),
+    (1, 2, 'call', 'Gọi xác nhận nội dung demo', 'Khách muốn tập trung vào Top 3 khách hàng và việc quá hạn.', 'Chốt lịch demo nội bộ.', DATE_SUB(NOW(), INTERVAL 5 DAY)),
+    (1, 1, 'note', 'Ghi chú ưu tiên demo', 'Admin đánh dấu An Phú là khách trọng điểm cho phần trình bày dashboard.', 'Ưu tiên xử lý trước.', DATE_SUB(NOW(), INTERVAL 1 DAY)),
+
+    (2, 3, 'call', 'Gọi rà soát hợp đồng cũ', 'Khách muốn mở rộng số lượng nhân viên sử dụng hệ thống.', 'Cần gửi báo giá nâng cấp.', DATE_SUB(NOW(), INTERVAL 18 DAY)),
+    (2, 3, 'email', 'Gửi báo giá nâng cấp', 'Đã gửi báo giá gói mở rộng theo số lượng người dùng.', 'Chờ xác nhận ngân sách.', DATE_SUB(NOW(), INTERVAL 9 DAY)),
+    (2, 1, 'meeting', 'Họp đánh giá hiệu quả', 'Khách đánh giá tốt phần báo cáo công việc hoàn thành theo nhân viên.', 'Có khả năng gia hạn.', DATE_SUB(NOW(), INTERVAL 3 DAY)),
+
+    (3, 2, 'chat', 'Trao đổi yêu cầu kỹ thuật', 'Khách hỏi về kiểm tra trùng số điện thoại và email.', 'Đã giải thích cơ chế kiểm tra trùng.', DATE_SUB(NOW(), INTERVAL 13 DAY)),
+    (3, 2, 'meeting', 'Demo nhanh dashboard', 'Khách chú ý phần Top 3 và danh sách việc sắp tới.', 'Muốn nhận đề xuất triển khai.', DATE_SUB(NOW(), INTERVAL 7 DAY)),
+    (3, 2, 'zalo', 'Gửi ảnh giao diện mẫu', 'Gửi ảnh màn hình danh sách khách hàng và trang chi tiết.', 'Khách yêu cầu thêm báo cáo theo nhân viên.', DATE_SUB(NOW(), INTERVAL 4 DAY)),
+    (3, 2, 'call', 'Gọi chốt bước tiếp theo', 'Khách cần bản đề xuất trước cuộc họp quản lý.', 'Tạo công việc gửi đề xuất.', DATE_SUB(NOW(), INTERVAL 1 DAY)),
+
+    (4, 4, 'call', 'Gọi tư vấn ngoài giờ', 'Khách chỉ rảnh sau 19h và cần xem nhanh quy trình nhập khách.', 'Cần gọi lại đúng khung giờ.', DATE_SUB(NOW(), INTERVAL 8 DAY)),
+    (4, 4, 'chat', 'Xác nhận nhu cầu studio', 'Khách muốn lưu lịch sử chăm sóc khách đặt lịch chụp.', 'Đợi khách phản hồi sau demo.', DATE_SUB(NOW(), INTERVAL 2 DAY)),
+
+    (5, 4, 'meeting', 'Trao đổi chăm sóc định kỳ', 'Khách cần nhắc lịch chăm sóc khách cũ theo từng đợt khuyến mãi.', 'Tạo lịch theo dõi định kỳ.', DATE_SUB(NOW(), INTERVAL 20 DAY)),
+    (5, 4, 'call', 'Kiểm tra phản hồi sau tư vấn', 'Khách hài lòng nhưng muốn xem thêm báo cáo.', 'Hẹn gửi báo cáo mẫu.', DATE_SUB(NOW(), INTERVAL 6 DAY)),
+
+    (6, 2, 'note', 'Ghi nhận khách ghé trực tiếp', 'Khách cần cách lưu thông tin khách mua lẻ và ghi chú nhu cầu.', 'Cần gọi xác nhận sau 5 ngày.', DATE_SUB(NOW(), INTERVAL 10 DAY)),
+    (7, 3, 'email', 'Gửi bảng tính ngân sách', 'Khách yêu cầu tài liệu để trình quản lý cửa hàng.', 'Chờ duyệt ngân sách.', DATE_SUB(NOW(), INTERVAL 11 DAY)),
+    (8, 3, 'call', 'Gọi tư vấn ban đầu', 'Khách muốn quản lý khách hàng thân thiết cho chuỗi cà phê nhỏ.', 'Hẹn gửi kịch bản triển khai.', DATE_SUB(NOW(), INTERVAL 6 DAY)),
+    (10, 2, 'meeting', 'Tiếp nhận nhu cầu trường học', 'Khách muốn theo dõi phụ huynh quan tâm khóa học.', 'Cần phân tích thêm trước khi báo giá.', DATE_SUB(NOW(), INTERVAL 14 DAY)),
+    (11, 3, 'other', 'Cập nhật trạng thái tạm ngưng', 'Khách chưa triển khai trong tháng này do thay đổi kế hoạch nội bộ.', 'Nhắc lại vào tháng sau.', DATE_SUB(NOW(), INTERVAL 15 DAY));
 
 INSERT INTO `follow_up_tasks`
     (`customer_id`, `assigned_user_id`, `created_by`, `title`, `description`, `due_at`, `status`, `priority`, `completed_at`)
 VALUES
-    (1, 2, 1, 'Chuẩn bị demo Top 3 khách hàng', 'Tập trung vào dashboard và lịch sử tương tác.', DATE_ADD(NOW(), INTERVAL 1 DAY), 'in_progress', 'high', NULL),
-    (2, 3, 1, 'Gọi chốt phản hồi báo giá', 'Nhắc khách phản hồi sau khi đã nhận email báo giá.', DATE_SUB(NOW(), INTERVAL 1 DAY), 'pending', 'high', NULL),
-    (3, 2, 2, 'Gửi tài liệu hỗ trợ', 'Gửi tài liệu mô tả quy trình chăm sóc khách hàng.', DATE_ADD(NOW(), INTERVAL 2 DAY), 'pending', 'medium', NULL),
-    (4, 3, 3, 'Gọi lại sau giờ hành chính', 'Liên hệ sau 19h theo yêu cầu của khách.', DATE_ADD(NOW(), INTERVAL 6 HOUR), 'pending', 'medium', NULL),
-    (5, 2, 2, 'Xác nhận nhu cầu quản lý khách lẻ', 'Gọi kiểm tra nhu cầu sau khi khách ghé quầy.', DATE_ADD(NOW(), INTERVAL 5 DAY), 'pending', 'low', NULL),
-    (6, 3, 3, 'Theo dõi lại sau tạm ngưng', 'Kiểm tra xem khách đã có nhu cầu trở lại chưa.', DATE_ADD(NOW(), INTERVAL 14 DAY), 'pending', 'low', NULL),
-    (7, 2, 1, 'Gửi đề xuất nâng cấp', 'Soạn đề xuất để chuyển khách sang nhóm VIP.', DATE_SUB(NOW(), INTERVAL 2 DAY), 'completed', 'medium', DATE_SUB(NOW(), INTERVAL 1 DAY));
+    (1, 2, 1, 'Chuẩn bị kịch bản demo cho An Phú', 'Tập trung Top 3 khách hàng, KPI và việc quá hạn.', DATE_ADD(NOW(), INTERVAL 1 DAY), 'in_progress', 'high', NULL),
+    (1, 2, 2, 'Gửi tài liệu phân loại khách VIP', 'Tài liệu đã gửi sau buổi gặp đầu tiên.', DATE_SUB(NOW(), INTERVAL 11 DAY), 'completed', 'medium', DATE_SUB(NOW(), INTERVAL 10 DAY)),
+    (1, 2, 2, 'Xác nhận danh sách người dự demo', 'Đã xác nhận trưởng nhóm kinh doanh và quản lý vận hành.', DATE_SUB(NOW(), INTERVAL 2 DAY), 'completed', 'high', DATE_SUB(NOW(), INTERVAL 1 DAY)),
+
+    (2, 3, 1, 'Gọi chốt phản hồi báo giá nâng cấp', 'Nhắc khách phản hồi sau khi đã nhận báo giá.', DATE_ADD(NOW(), INTERVAL 2 DAY), 'pending', 'high', NULL),
+    (2, 3, 3, 'Cập nhật hồ sơ khách trung thành', 'Đã bổ sung lịch sử hợp tác và ghi chú gia hạn.', DATE_SUB(NOW(), INTERVAL 8 DAY), 'completed', 'medium', DATE_SUB(NOW(), INTERVAL 7 DAY)),
+    (2, 3, 3, 'Gửi mẫu báo cáo nhân viên', 'Đã gửi file mô tả chỉ số hiệu quả nhân viên.', DATE_SUB(NOW(), INTERVAL 4 DAY), 'completed', 'medium', DATE_SUB(NOW(), INTERVAL 3 DAY)),
+    (2, 3, 3, 'Hẹn khảo sát kho vận', 'Khách hủy do đổi lịch nội bộ.', DATE_SUB(NOW(), INTERVAL 5 DAY), 'cancelled', 'low', NULL),
+
+    (3, 2, 2, 'Gửi đề xuất triển khai cho Khoa Tech', 'Soạn đề xuất tập trung AJAX, kiểm tra trùng và dashboard.', DATE_ADD(NOW(), INTERVAL 3 DAY), 'pending', 'high', NULL),
+    (3, 2, 2, 'Hoàn tất demo nhanh dashboard', 'Đã demo phần Top 3 và công việc sắp tới.', DATE_SUB(NOW(), INTERVAL 6 DAY), 'completed', 'medium', DATE_SUB(NOW(), INTERVAL 6 DAY)),
+
+    (4, 4, 4, 'Gọi lại Hà An Studio sau 19h', 'Khách yêu cầu gọi ngoài giờ hành chính.', DATE_SUB(NOW(), INTERVAL 1 DAY), 'pending', 'high', NULL),
+    (5, 4, 4, 'Gửi báo cáo mẫu cho Chi Mai Beauty', 'Việc đã quá hạn, cần ưu tiên xử lý trước buổi demo.', DATE_SUB(NOW(), INTERVAL 3 DAY), 'in_progress', 'medium', NULL),
+    (5, 4, 4, 'Tạo lịch chăm sóc định kỳ', 'Đã thống nhất lịch nhắc theo từng đợt khuyến mãi.', DATE_SUB(NOW(), INTERVAL 15 DAY), 'completed', 'medium', DATE_SUB(NOW(), INTERVAL 14 DAY)),
+
+    (6, 2, 2, 'Gọi xác nhận nhu cầu Huy Foods', 'Kiểm tra lại sau khi khách ghé trực tiếp.', DATE_ADD(NOW(), INTERVAL 5 DAY), 'pending', 'low', NULL),
+    (7, 3, 3, 'Nhắc Phúc Gia Mart duyệt ngân sách', 'Công việc quá hạn để dashboard có cảnh báo rõ.', DATE_SUB(NOW(), INTERVAL 2 DAY), 'pending', 'high', NULL),
+    (8, 3, 3, 'Gửi kịch bản khách hàng thân thiết', 'Gửi ví dụ quy trình cho quán cà phê.', DATE_ADD(NOW(), INTERVAL 4 DAY), 'pending', 'medium', NULL),
+    (9, 4, 4, 'Kiểm tra lại nhu cầu Nhi Boutique', 'Khách mới từ mạng xã hội, cần xác nhận nhu cầu thật.', DATE_ADD(NOW(), INTERVAL 7 DAY), 'pending', 'medium', NULL),
+    (10, 2, 1, 'Phân tích nhu cầu Hân Edu', 'Chưa đủ dữ liệu để báo giá nên cần thêm thông tin.', DATE_ADD(NOW(), INTERVAL 6 DAY), 'pending', 'medium', NULL),
+    (11, 3, 3, 'Nhắc lại Dũng Auto sau tạm ngưng', 'Theo dõi lại khi khách có kế hoạch mới.', DATE_ADD(NOW(), INTERVAL 20 DAY), 'pending', 'low', NULL),
+    (11, 3, 3, 'Demo quản lý lịch hẹn cho Dũng Auto', 'Khách hủy vì chưa sẵn sàng triển khai.', DATE_SUB(NOW(), INTERVAL 12 DAY), 'cancelled', 'low', NULL);
 
 -- Quick visibility after import.
 SELECT @app_collation AS selected_collation;

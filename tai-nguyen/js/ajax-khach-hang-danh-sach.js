@@ -54,8 +54,8 @@ function renderCustomerRows(body, customers) {
         const row = document.createElement('tr');
         const cell = document.createElement('td');
         cell.colSpan = 6;
-        cell.className = 'text-center text-muted py-5';
-        cell.textContent = 'Không tìm thấy khách hàng phù hợp.';
+        cell.className = 'table-empty-state text-center text-muted py-5';
+        cell.textContent = 'Không tìm thấy khách hàng phù hợp. Hãy thử đổi từ khóa hoặc bộ lọc.';
         row.append(cell);
         body.append(row);
         return;

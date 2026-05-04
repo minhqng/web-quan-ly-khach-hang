@@ -9,7 +9,8 @@ $nhanNut = $nhanNut ?? 'Lưu khách hàng';
 $tieuDeBieuMau = $tieuDeBieuMau ?? 'Thông tin khách hàng';
 $coLoi = static fn (string $truong): string => isset($loi[$truong]) ? ' is-invalid' : '';
 ?>
-<form method="post" class="surface-card customer-form" data-customer-form data-customer-id="<?= e((string) $idKhachHang) ?>" novalidate>
+<form method="post" class="surface-card customer-form" data-customer-form data-customer-id="<?= e((string) $idKhachHang) ?>">
+    <?= csrf_input() ?>
     <div class="customer-form-heading">
         <div>
             <p class="eyebrow">Hồ sơ quản lý</p>
@@ -32,7 +33,7 @@ $coLoi = static fn (string $truong): string => isset($loi[$truong]) ? ' is-inval
 
         <div class="col-md-6 col-lg-3">
             <label class="form-label" for="phone">Số điện thoại</label>
-            <input class="form-control<?= e($coLoi('phone')) ?>" data-duplicate-field="phone" id="phone" maxlength="32" name="phone" value="<?= e($duLieu['phone']) ?>">
+            <input class="form-control<?= e($coLoi('phone')) ?>" data-duplicate-field="phone" id="phone" inputmode="tel" maxlength="32" name="phone" pattern="[0-9+() .-]{9,32}" value="<?= e($duLieu['phone']) ?>">
             <div class="duplicate-feedback" data-duplicate-target="phone"></div>
             <?php if (isset($loi['phone'])): ?><div class="invalid-feedback d-block"><?= e($loi['phone']) ?></div><?php endif; ?>
         </div>

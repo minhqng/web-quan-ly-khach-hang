@@ -1,0 +1,135 @@
+.follow-up-nav {
+    align-items: center;
+    display: flex;
+    gap: var(--space-3);
+    justify-content: space-between;
+    margin-bottom: var(--space-4);
+}
+
+.follow-up-tabs {
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    display: inline-flex;
+    gap: var(--space-1);
+    padding: var(--space-1);
+}
+
+.follow-up-tab {
+    border-radius: var(--radius-sm);
+    color: var(--color-muted);
+    font-weight: 700;
+    min-height: 36px;
+    padding: var(--space-2) var(--space-3);
+    text-decoration: none;
+}
+
+.follow-up-tab:hover,
+.follow-up-tab.is-active {
+    background: var(--color-primary-soft);
+    color: var(--color-primary-dark);
+}
+
+.task-board-heading {
+    align-items: flex-start;
+    border-bottom: 1px solid var(--color-line);
+    display: flex;
+    gap: var(--space-4);
+    justify-content: space-between;
+    padding: var(--space-4);
+}
+
+.task-board-heading .task-board-feedback {
+    border-bottom: 0;
+    margin-left: 0;
+    min-width: 220px;
+    padding: 0;
+}
+
+.task-table tbody tr.is-overdue {
+    background: linear-gradient(90deg, rgba(220, 38, 38, 0.08), transparent 46%);
+}
+
+.task-table tbody tr.is-overdue > td:first-child {
+    border-left: 3px solid var(--color-danger);
+}
+
+.task-table tbody tr.is-finished {
+    opacity: 0.72;
+}
+
+.task-due-cell,
+.task-title-cell {
+    display: grid;
+    gap: var(--space-1);
+}
+
+.task-due-cell {
+    min-width: 150px;
+}
+
+.task-due-cell span,
+.task-title-cell span {
+    color: var(--color-muted);
+    font-size: 0.88rem;
+}
+
+.is-overdue .task-due-cell span {
+    color: var(--color-danger);
+    font-weight: 700;
+}
+
+.task-row-actions {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    min-width: 190px;
+}
+
+.task-row-actions form {
+    margin: 0;
+}
+
+.follow-up-form {
+    max-width: 1080px;
+}
+
+.follow-up-form-heading {
+    margin-bottom: var(--space-4);
+}
+
+.follow-up-form-actions {
+    align-items: center;
+    border-top: 1px solid var(--color-line);
+    display: flex;
+    gap: var(--space-2);
+    justify-content: flex-end;
+    margin-top: var(--space-5);
+    padding-top: var(--space-4);
+}
+
+@media (max-width: 780px) {
+    .follow-up-nav,
+    .task-board-heading,
+    .follow-up-form-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .follow-up-tabs {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        width: 100%;
+    }
+
+    .follow-up-tab {
+        text-align: center;
+    }
+
+    .task-board-heading .task-board-feedback {
+        min-width: 0;
+        text-align: left;
+    }
+}

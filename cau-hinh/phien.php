@@ -22,4 +22,5 @@ if (session_status() === PHP_SESSION_NONE) {
 
     $_SESSION['khoi_tao_luc'] ??= time();
     $_SESSION['hoat_dong_cuoi'] ??= time();
+    $_SESSION['tai_tao_luc'] ??= time();
 }

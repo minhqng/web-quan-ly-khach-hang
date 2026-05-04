@@ -79,9 +79,26 @@ function tao_cong_viec_tu_tuong_tac(array $duLieu): void
 {
     $nguoiDung = nguoi_dung_hien_tai();
     $maPhuTrach = (int) (lay_mot_gia_tri(
-        'SELECT assigned_user_id FROM customers WHERE id = :id',
+        "SELECT u.id
+         FROM customers c
+         INNER JOIN users u ON u.id = c.assigned_user_id
+         WHERE c.id = :id AND u.role = 'staff' AND u.status = 'active'",
         ['id' => (int) $duLieu['customer_id']]
-    ) ?: ($nguoiDung['id'] ?? 0));
+    ) ?: 0);
+
+    if ($maPhuTrach === 0 && ($nguoiDung['vai_tro'] ?? '') === VAI_TRO_NHAN_VIEN) {
+        $maPhuTrach = (int) ($nguoiDung['id'] ?? 0);
+    }
+
+    if ($maPhuTrach === 0) {
+        $maPhuTrach = (int) lay_mot_gia_tri(
+            "SELECT id FROM users WHERE role = 'staff' AND status = 'active' ORDER BY id ASC LIMIT 1"
+        );
+    }
+
+    if ($maPhuTrach === 0) {
+        throw new RuntimeException('Không có nhân viên hoạt động để giao công việc theo dõi.');
+    }
 
     thuc_thi_lenh(
         'INSERT INTO follow_up_tasks

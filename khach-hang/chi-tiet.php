@@ -38,18 +38,22 @@ require __DIR__ . '/../giao-dien/dau-trang.php';
         </div>
         <div class="customer-profile-actions">
             <a class="btn btn-outline-primary" href="<?= e(duong_dan('khach-hang/')) ?>">Quay lại</a>
-            <?php if ($khachHang['deleted_at']): ?>
+            <?php if ($khachHang['deleted_at'] && la_admin()): ?>
                 <form action="<?= e(duong_dan('khach-hang/khoi-phuc.php')) ?>" method="post">
+                    <?= csrf_input() ?>
                     <input type="hidden" name="id" value="<?= e((string) $id) ?>">
                     <button class="btn btn-success" type="submit">Khôi phục</button>
                 </form>
-            <?php else: ?>
+            <?php elseif (!$khachHang['deleted_at']): ?>
                 <a class="btn btn-outline-primary" href="<?= e(duong_dan('tuong-tac/them.php?customer_id=' . $id)) ?>">Thêm tương tác</a>
                 <a class="btn btn-primary" href="<?= e(duong_dan('khach-hang/sua.php?id=' . $id)) ?>">Sửa hồ sơ</a>
-                <form action="<?= e(duong_dan('khach-hang/xoa-mem.php')) ?>" method="post">
-                    <input type="hidden" name="id" value="<?= e((string) $id) ?>">
-                    <button class="btn btn-outline-danger" data-confirm-message="Xóa mềm khách hàng này khỏi danh sách đang chăm sóc?" type="submit">Xóa mềm</button>
-                </form>
+                <?php if (la_admin()): ?>
+                    <form action="<?= e(duong_dan('khach-hang/xoa-mem.php')) ?>" method="post">
+                        <?= csrf_input() ?>
+                        <input type="hidden" name="id" value="<?= e((string) $id) ?>">
+                        <button class="btn btn-outline-danger" data-confirm-message="Xóa mềm khách hàng này khỏi danh sách đang chăm sóc?" type="submit">Xóa mềm</button>
+                    </form>
+                <?php endif; ?>
             <?php endif; ?>
         </div>
     </div>
@@ -120,6 +124,7 @@ require __DIR__ . '/../giao-dien/dau-trang.php';
                                 <div class="interaction-actions">
                                     <a class="btn btn-sm btn-outline-secondary" href="<?= e(duong_dan('tuong-tac/sua.php?id=' . $tuongTac['id'])) ?>">Sửa</a>
                                     <form action="<?= e(duong_dan('tuong-tac/xoa.php')) ?>" method="post">
+                                        <?= csrf_input() ?>
                                         <input type="hidden" name="id" value="<?= e($tuongTac['id']) ?>">
                                         <button class="btn btn-sm btn-outline-danger" data-confirm-message="Xóa tương tác này khỏi lịch sử?" type="submit">Xóa</button>
                                     </form>
@@ -128,7 +133,9 @@ require __DIR__ . '/../giao-dien/dau-trang.php';
                         </div>
                     </article>
                 <?php endforeach; ?>
-                <?php if ($tuongTacGanDay === []): ?><p class="text-muted mb-0">Chưa có tương tác.</p><?php endif; ?>
+                <?php if ($tuongTacGanDay === []): ?>
+                    <div class="empty-state-inline"><strong>Chưa có tương tác</strong><p>Ghi nhận trao đổi đầu tiên để hồ sơ này có lịch sử chăm sóc.</p></div>
+                <?php endif; ?>
             </div>
         </section>
 
@@ -142,7 +149,9 @@ require __DIR__ . '/../giao-dien/dau-trang.php';
                         <span class="badge <?= e($lopCongViec[$congViec['status']] ?? 'badge-soft-primary') ?>"><?= e($nhanCongViec[$congViec['status']] ?? 'Không rõ') ?></span>
                     </article>
                 <?php endforeach; ?>
-                <?php if ($congViecTheoDoi === []): ?><p class="text-muted mb-0">Chưa có công việc theo dõi.</p><?php endif; ?>
+                <?php if ($congViecTheoDoi === []): ?>
+                    <div class="empty-state-inline"><strong>Chưa có công việc theo dõi</strong><p>Tạo việc sau tương tác để không bỏ sót bước chăm sóc tiếp theo.</p></div>
+                <?php endif; ?>
             </div>
         </section>
     </div>

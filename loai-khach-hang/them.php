@@ -10,6 +10,8 @@ $duLieu = du_lieu_mac_dinh_loai_khach_hang();
 $loi = [];
 
 if (la_post()) {
+    yeu_cau_csrf('loai-khach-hang/them.php');
+
     $duLieu = lay_du_lieu_form_loai_khach_hang($_POST);
     $loi = kiem_tra_du_lieu_loai_khach_hang($duLieu);
 

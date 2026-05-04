@@ -38,6 +38,7 @@ function dang_nhap_nguoi_dung(array $nguoiDung): void
     ];
     $_SESSION['dang_nhap_luc'] = time();
     $_SESSION['hoat_dong_cuoi'] = time();
+    $_SESSION['tai_tao_luc'] = time();
 }
 
 function dang_xuat_nguoi_dung(): void
@@ -50,6 +51,7 @@ function dang_xuat_nguoi_dung(): void
 
     $_SESSION['khoi_tao_luc'] = time();
     $_SESSION['hoat_dong_cuoi'] = time();
+    $_SESSION['tai_tao_luc'] = time();
 }
 
 function phien_dang_nhap_het_han(): bool
@@ -63,6 +65,11 @@ function phien_dang_nhap_het_han(): bool
 
 function cap_nhat_hoat_dong_phien(): void
 {
+    if (time() - (int) ($_SESSION['tai_tao_luc'] ?? 0) > 900) {
+        session_regenerate_id(true);
+        $_SESSION['tai_tao_luc'] = time();
+    }
+
     $_SESSION['hoat_dong_cuoi'] = time();
 }
 
@@ -114,4 +121,9 @@ function tim_nguoi_dung_dang_nhap(string $tenDangNhapHoacEmail): ?array
 function mat_khau_hop_le(string $matKhau, string $hash): bool
 {
     return password_verify($matKhau, $hash);
+}
+
+function tao_hash_mat_khau(string $matKhau): string
+{
+    return password_hash($matKhau, PASSWORD_DEFAULT);
 }

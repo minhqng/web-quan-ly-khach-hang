@@ -35,15 +35,49 @@ function gia_tri_post(string $khoa, mixed $macDinh = null): mixed
     return $_POST[$khoa] ?? $macDinh;
 }
 
+function csrf_token(): string
+{
+    if (empty($_SESSION['csrf_token']) || !is_string($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+
+    return $_SESSION['csrf_token'];
+}
+
+function csrf_input(): string
+{
+    return '<input type="hidden" name="csrf_token" value="' . e(csrf_token()) . '">';
+}
+
+function csrf_token_hop_le(?string $token = null): bool
+{
+    $token ??= (string) ($_POST['csrf_token'] ?? ($_SERVER['HTTP_X_CSRF_TOKEN'] ?? ''));
+
+    return is_string($token) && $token !== '' && hash_equals(csrf_token(), $token);
+}
+
 function la_post(): bool
 {
     return ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST';
 }
 
-function yeu_cau_post(string $duongDanQuayLai = 'bang-dieu-khien.php'): void
+function yeu_cau_post(string $duongDanQuayLai = 'bang-dieu-khien.php', bool $kiemTraCsrf = true): void
 {
     if (!la_post()) {
         thong_bao_loi('Phương thức yêu cầu không hợp lệ.');
+        chuyen_huong($duongDanQuayLai);
+    }
+
+    if ($kiemTraCsrf && !csrf_token_hop_le()) {
+        thong_bao_canh_bao('Phiên biểu mẫu không hợp lệ. Vui lòng thử lại.');
+        chuyen_huong($duongDanQuayLai);
+    }
+}
+
+function yeu_cau_csrf(string $duongDanQuayLai = 'bang-dieu-khien.php'): void
+{
+    if (!csrf_token_hop_le()) {
+        thong_bao_canh_bao('Phiên biểu mẫu không hợp lệ. Vui lòng thử lại.');
         chuyen_huong($duongDanQuayLai);
     }
 }

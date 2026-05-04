@@ -24,6 +24,8 @@ $duLieu = [
 $loi = [];
 
 if (la_post()) {
+    yeu_cau_csrf('loai-khach-hang/sua.php?id=' . $id);
+
     $duLieu = lay_du_lieu_form_loai_khach_hang($_POST);
     $loi = kiem_tra_du_lieu_loai_khach_hang($duLieu, $id);
 

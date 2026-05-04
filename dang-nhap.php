@@ -14,6 +14,8 @@ $matKhau = (string) gia_tri_post('mat_khau', '');
 $loiDangNhap = '';
 
 if (la_post()) {
+    yeu_cau_csrf('dang-nhap.php');
+
     if ($taiKhoan === '' || $matKhau === '') {
         $loiDangNhap = 'Vui lòng nhập đầy đủ tài khoản và mật khẩu.';
     } else {
@@ -58,7 +60,8 @@ if (la_post()) {
             <p>Theo dõi khách hàng, lịch sử tương tác và công việc chăm sóc trong một giao diện gọn gàng.</p>
         </div>
 
-        <form class="login-form" method="post" action="<?= e(duong_dan('dang-nhap.php')) ?>" novalidate>
+        <form class="login-form" method="post" action="<?= e(duong_dan('dang-nhap.php')) ?>">
+            <?= csrf_input() ?>
             <?php if ($loiDangNhap !== ''): ?>
                 <div class="alert alert-danger" role="alert"><?= e($loiDangNhap) ?></div>
             <?php endif; ?>
