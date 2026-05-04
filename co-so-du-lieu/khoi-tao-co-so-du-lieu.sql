@@ -153,9 +153,10 @@ CREATE TABLE `interactions` (
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `customer_id` INT UNSIGNED NOT NULL,
     `user_id` INT UNSIGNED NOT NULL,
-    `interaction_type` ENUM('call', 'email', 'meeting', 'note', 'zalo', 'other') NOT NULL DEFAULT 'note',
+    `interaction_type` ENUM('call', 'email', 'meeting', 'note', 'chat', 'zalo', 'other') NOT NULL DEFAULT 'note',
     `title` VARCHAR(150) NOT NULL,
     `content` TEXT NULL,
+    `result` VARCHAR(150) NULL,
     `interaction_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -285,15 +286,15 @@ VALUES
      'Địa chỉ cũ', 'TP. Hồ Chí Minh', 'other', 'inactive', 'Bản ghi đã xóa mềm để kiểm thử tái sử dụng điện thoại/email.', DATE_SUB(NOW(), INTERVAL 30 DAY));
 
 INSERT INTO `interactions`
-    (`customer_id`, `user_id`, `interaction_type`, `title`, `content`, `interaction_at`)
+    (`customer_id`, `user_id`, `interaction_type`, `title`, `content`, `result`, `interaction_at`)
 VALUES
-    (1, 2, 'meeting', 'Gặp tư vấn lần đầu', 'Khách quan tâm gói chăm sóc khách hàng cho đội bán hàng.', DATE_SUB(NOW(), INTERVAL 6 DAY)),
-    (1, 2, 'call', 'Gọi xác nhận nhu cầu', 'Khách muốn xem demo dashboard và báo cáo.', DATE_SUB(NOW(), INTERVAL 2 DAY)),
-    (2, 3, 'email', 'Gửi báo giá sơ bộ', 'Đã gửi bảng giá và hẹn phản hồi trong tuần.', DATE_SUB(NOW(), INTERVAL 3 DAY)),
-    (3, 2, 'zalo', 'Trao đổi qua Zalo', 'Khách hỏi về chính sách hỗ trợ sau triển khai.', DATE_SUB(NOW(), INTERVAL 1 DAY)),
-    (4, 3, 'call', 'Gọi nhắc lịch tư vấn', 'Khách đề nghị gọi lại sau 19h.', DATE_SUB(NOW(), INTERVAL 4 DAY)),
-    (5, 2, 'note', 'Ghi chú tại quầy', 'Khách cần quản lý danh bạ khách mua lẻ.', DATE_SUB(NOW(), INTERVAL 10 DAY)),
-    (7, 2, 'meeting', 'Demo nhanh tính năng', 'Khách đánh giá cao phần theo dõi công việc.', DATE_SUB(NOW(), INTERVAL 1 DAY));
+    (1, 2, 'meeting', 'Gặp tư vấn lần đầu', 'Khách quan tâm gói chăm sóc khách hàng cho đội bán hàng.', 'Cần gửi demo và báo giá chi tiết.', DATE_SUB(NOW(), INTERVAL 6 DAY)),
+    (1, 2, 'call', 'Gọi xác nhận nhu cầu', 'Khách muốn xem demo dashboard và báo cáo.', 'Hẹn chuẩn bị demo Top 3 khách hàng.', DATE_SUB(NOW(), INTERVAL 2 DAY)),
+    (2, 3, 'email', 'Gửi báo giá sơ bộ', 'Đã gửi bảng giá và hẹn phản hồi trong tuần.', 'Chờ khách xác nhận ngân sách.', DATE_SUB(NOW(), INTERVAL 3 DAY)),
+    (3, 2, 'chat', 'Trao đổi qua chat', 'Khách hỏi về chính sách hỗ trợ sau triển khai.', 'Gửi tài liệu hỗ trợ sau bán hàng.', DATE_SUB(NOW(), INTERVAL 1 DAY)),
+    (4, 3, 'call', 'Gọi nhắc lịch tư vấn', 'Khách đề nghị gọi lại sau 19h.', 'Cần gọi lại ngoài giờ hành chính.', DATE_SUB(NOW(), INTERVAL 4 DAY)),
+    (5, 2, 'note', 'Ghi chú tại quầy', 'Khách cần quản lý danh bạ khách mua lẻ.', 'Theo dõi nhu cầu định kỳ.', DATE_SUB(NOW(), INTERVAL 10 DAY)),
+    (7, 2, 'meeting', 'Demo nhanh tính năng', 'Khách đánh giá cao phần theo dõi công việc.', 'Có cơ hội nâng cấp lên nhóm VIP.', DATE_SUB(NOW(), INTERVAL 1 DAY));
 
 INSERT INTO `follow_up_tasks`
     (`customer_id`, `assigned_user_id`, `created_by`, `title`, `description`, `due_at`, `status`, `priority`, `completed_at`)

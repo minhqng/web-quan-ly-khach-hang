@@ -1,0 +1,128 @@
+.interaction-filter,
+.interaction-form {
+    margin-bottom: var(--space-4);
+}
+
+.interaction-timeline {
+    display: grid;
+    gap: var(--space-4);
+}
+
+.interaction-timeline-item,
+.customer-interaction-feed article {
+    display: grid;
+    gap: var(--space-3);
+    grid-template-columns: 14px minmax(0, 1fr);
+    position: relative;
+}
+
+.interaction-marker,
+.interaction-dot {
+    background: var(--color-primary);
+    border-radius: 999px;
+    height: 12px;
+    margin-top: 8px;
+    width: 12px;
+}
+
+.interaction-card {
+    border-bottom: 1px solid var(--color-line);
+    display: grid;
+    gap: var(--space-3);
+    padding-bottom: var(--space-4);
+}
+
+.interaction-card-header,
+.interaction-section-heading,
+.interaction-feed-title {
+    align-items: flex-start;
+    display: flex;
+    gap: var(--space-3);
+    justify-content: space-between;
+}
+
+.interaction-card-header h2,
+.interaction-feed-title strong {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: var(--space-2) 0 0;
+}
+
+.interaction-card-header p,
+.interaction-card-header time,
+.customer-interaction-feed time {
+    color: var(--color-muted);
+    font-size: 0.88rem;
+    margin: 0;
+}
+
+.interaction-content,
+.interaction-result {
+    margin: 0;
+}
+
+.interaction-result {
+    background: var(--color-surface-soft);
+    border-left: 3px solid var(--color-primary);
+    border-radius: var(--radius-sm);
+    padding: var(--space-2) var(--space-3);
+}
+
+.interaction-actions,
+.interaction-form-actions {
+    align-items: center;
+    display: flex;
+    gap: var(--space-2);
+    justify-content: flex-end;
+}
+
+.interaction-actions form {
+    margin: 0;
+}
+
+.interaction-form {
+    max-width: 1080px;
+}
+
+.interaction-form-heading {
+    margin-bottom: var(--space-4);
+}
+
+.interaction-follow-up-box {
+    background: var(--color-surface-soft);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    margin-top: var(--space-5);
+    padding: var(--space-4);
+}
+
+.interaction-form-actions {
+    border-top: 1px solid var(--color-line);
+    margin-top: var(--space-5);
+    padding-top: var(--space-4);
+}
+
+.customer-interaction-feed {
+    display: grid;
+    gap: var(--space-4);
+}
+
+.customer-interaction-feed article {
+    border-top: 1px solid var(--color-line);
+    padding-top: var(--space-3);
+}
+
+.customer-interaction-feed p {
+    margin: var(--space-2) 0 0;
+}
+
+@media (max-width: 760px) {
+    .interaction-card-header,
+    .interaction-section-heading,
+    .interaction-feed-title,
+    .interaction-actions,
+    .interaction-form-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+}
