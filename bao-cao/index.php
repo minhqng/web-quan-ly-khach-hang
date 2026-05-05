@@ -4,18 +4,25 @@ declare(strict_types=1);
 
 require __DIR__ . '/../dung-chung/khoi-dong.php';
 require __DIR__ . '/../dung-chung/kiem-tra-dang-nhap.php';
-require_once __DIR__ . '/du-lieu-bao-cao.php';
-
-$boLocBaoCao = lay_bo_loc_bao_cao();
-$danhSachNhanVienBaoCao = lay_lua_chon_nhan_vien_bao_cao();
-$danhSachLoaiBaoCao = lay_lua_chon_loai_khach_hang_bao_cao();
-$tongQuan = lay_tong_quan_bao_cao($boLocBaoCao);
-$theoLoai = lay_khach_hang_theo_loai_bao_cao($boLocBaoCao);
-$theoTrangThaiViec = lay_cong_viec_theo_trang_thai_bao_cao($boLocBaoCao);
-$hieuQuaNhanVien = lay_hieu_qua_nhan_vien_bao_cao($boLocBaoCao);
-$topNhanVien = $hieuQuaNhanVien[0] ?? null;
 
 $tieuDe = 'Báo cáo';
+try {
+    require_once __DIR__ . '/du-lieu-bao-cao.php';
+    $boLocBaoCao = lay_bo_loc_bao_cao();
+    $danhSachNhanVienBaoCao = lay_lua_chon_nhan_vien_bao_cao();
+    $danhSachLoaiBaoCao = lay_lua_chon_loai_khach_hang_bao_cao();
+    $tongQuan = lay_tong_quan_bao_cao($boLocBaoCao);
+    $theoLoai = lay_khach_hang_theo_loai_bao_cao($boLocBaoCao);
+    $theoTrangThaiViec = lay_cong_viec_theo_trang_thai_bao_cao($boLocBaoCao);
+    $hieuQuaNhanVien = lay_hieu_qua_nhan_vien_bao_cao($boLocBaoCao);
+    $topNhanVien = $hieuQuaNhanVien[0] ?? null;
+    $nhanKpiTuongTac = ($boLocBaoCao['tu_ngay'] !== '' || $boLocBaoCao['den_ngay'] !== '')
+        ? 'Tương tác theo lọc'
+        : 'Tương tác 30 ngày';
+} catch (Throwable) {
+    hien_thi_loi_du_lieu($tieuDe, 'Không thể tải báo cáo. Vui lòng kiểm tra kết nối cơ sở dữ liệu và dữ liệu demo.');
+}
+
 require __DIR__ . '/../giao-dien/dau-trang.php';
 ?>
 <div class="page-header">
@@ -36,7 +43,7 @@ require __DIR__ . '/../giao-dien/dau-trang.php';
         <p class="text-muted mb-0">Không tính hồ sơ đã xóa mềm</p>
     </article>
     <article class="stat-card">
-        <div class="stat-label">Tương tác 30 ngày</div>
+        <div class="stat-label"><?= e($nhanKpiTuongTac) ?></div>
         <div class="stat-value number"><?= e(number_format($tongQuan['tuong_tac_30_ngay'], 0, ',', '.')) ?></div>
         <p class="text-muted mb-0">Dữ liệu từ lịch sử chăm sóc</p>
     </article>
@@ -73,6 +80,9 @@ require __DIR__ . '/../giao-dien/dau-trang.php';
             <?php foreach ($theoTrangThaiViec as $dong): ?>
                 <div><span><?= e(nhan_trang_thai_viec_bao_cao()[$dong['status']] ?? $dong['status']) ?></span><strong><?= e((string) $dong['total']) ?></strong></div>
             <?php endforeach; ?>
+            <?php if ($theoTrangThaiViec === []): ?>
+                <div><span>Chưa có công việc</span><strong>0</strong></div>
+            <?php endif; ?>
         </div>
         <a class="btn btn-outline-primary" href="<?= e(duong_dan('bao-cao/cong-viec.php')) ?>">Xem báo cáo công việc</a>
     </article>

@@ -28,7 +28,7 @@ if ($giaTriChuan === '') {
     ]);
 }
 
-$biTrung = khach_hang_bi_trung($truong, $giaTriChuan, $boQuaId);
+$biTrung = khach_hang_bi_trung($truong, $giaTriChuan, $boQuaId, !la_admin());
 
 tra_ve_json([
     'thanh_cong' => true,

@@ -4,37 +4,42 @@ declare(strict_types=1);
 
 require __DIR__ . '/../dung-chung/khoi-dong.php';
 require __DIR__ . '/../dung-chung/kiem-tra-dang-nhap.php';
-require_once __DIR__ . '/du-lieu-bao-cao.php';
 
-$boLocBaoCao = lay_bo_loc_bao_cao();
-$danhSachNhanVienBaoCao = lay_lua_chon_nhan_vien_bao_cao();
-$danhSachLoaiBaoCao = lay_lua_chon_loai_khach_hang_bao_cao();
-$theoTrangThai = lay_cong_viec_theo_trang_thai_bao_cao($boLocBaoCao);
-$hieuQuaNhanVien = lay_hieu_qua_nhan_vien_bao_cao($boLocBaoCao);
-$nhanTrangThai = nhan_trang_thai_viec_bao_cao();
-$tongViec = tong_cot_bao_cao($theoTrangThai);
-$viecQuaHan = tong_cot_bao_cao($theoTrangThai, 'overdue_count');
-$viecMo = 0;
-$viecHoanThanh = 0;
+$tieuDe = 'Báo cáo công việc';
+try {
+    require_once __DIR__ . '/du-lieu-bao-cao.php';
+    $boLocBaoCao = lay_bo_loc_bao_cao();
+    $danhSachNhanVienBaoCao = lay_lua_chon_nhan_vien_bao_cao();
+    $danhSachLoaiBaoCao = lay_lua_chon_loai_khach_hang_bao_cao();
+    $theoTrangThai = lay_cong_viec_theo_trang_thai_bao_cao($boLocBaoCao);
+    $hieuQuaNhanVien = lay_hieu_qua_nhan_vien_bao_cao($boLocBaoCao);
+    $nhanTrangThai = nhan_trang_thai_viec_bao_cao();
+    $tongViec = tong_cot_bao_cao($theoTrangThai);
+    $viecQuaHan = tong_cot_bao_cao($theoTrangThai, 'overdue_count');
+    $viecMo = 0;
+    $viecHoanThanh = 0;
 
-foreach ($theoTrangThai as $dong) {
-    if (in_array($dong['status'], ['pending', 'in_progress'], true)) {
-        $viecMo += (int) $dong['total'];
+    foreach ($theoTrangThai as $dong) {
+        if (in_array($dong['status'], ['pending', 'in_progress'], true)) {
+            $viecMo += (int) $dong['total'];
+        }
+        if ($dong['status'] === 'completed') {
+            $viecHoanThanh = (int) $dong['total'];
+        }
     }
-    if ($dong['status'] === 'completed') {
-        $viecHoanThanh = (int) $dong['total'];
-    }
+
+    $tyLeHoanThanh = ti_le_bao_cao($viecHoanThanh, $tongViec);
+} catch (Throwable) {
+    hien_thi_loi_du_lieu($tieuDe, 'Không thể tải báo cáo công việc. Vui lòng kiểm tra kết nối cơ sở dữ liệu và dữ liệu demo.');
 }
 
-$tyLeHoanThanh = ti_le_bao_cao($viecHoanThanh, $tongViec);
-$tieuDe = 'Báo cáo công việc';
 require __DIR__ . '/../giao-dien/dau-trang.php';
 ?>
 <div class="page-header">
     <div>
         <p class="eyebrow">Theo dõi vận hành</p>
         <h1 class="page-title">Báo cáo công việc</h1>
-        <p class="page-subtitle">Tổng hợp trạng thái follow-up, việc quá hạn và hiệu quả xử lý cơ bản của từng nhân viên.</p>
+        <p class="page-subtitle">Tổng hợp trạng thái follow-up, việc quá hạn và hiệu quả xử lý theo hạn công việc.</p>
     </div>
 </div>
 
@@ -45,7 +50,7 @@ require __DIR__ . '/../giao-dien/dau-trang.php';
     <article class="stat-card">
         <div class="stat-label">Tổng công việc</div>
         <div class="stat-value number"><?= e(number_format($tongViec, 0, ',', '.')) ?></div>
-        <p class="text-muted mb-0">Từ bảng follow_up_tasks</p>
+        <p class="text-muted mb-0">Tính theo hạn xử lý công việc</p>
     </article>
     <article class="stat-card">
         <div class="stat-label">Đang mở</div>
@@ -111,7 +116,7 @@ require __DIR__ . '/../giao-dien/dau-trang.php';
             <p class="eyebrow">Hiệu quả nhân viên</p>
             <h2 class="card-title">Chỉ số vận hành cơ bản</h2>
         </div>
-        <span>Không dùng để đánh giá nhân sự thật, chỉ phục vụ demo quản lý</span>
+        <span>Bộ lọc ngày trong báo cáo này áp dụng theo hạn xử lý</span>
     </div>
     <div class="table-responsive">
         <table class="table align-middle">

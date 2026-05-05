@@ -35,6 +35,7 @@ function dang_nhap_nguoi_dung(array $nguoiDung): void
         'ten_dang_nhap' => (string) ($nguoiDung['username'] ?? $nguoiDung['ten_dang_nhap'] ?? ''),
         'email' => (string) ($nguoiDung['email'] ?? ''),
         'vai_tro' => (string) ($nguoiDung['role'] ?? $nguoiDung['vai_tro'] ?? VAI_TRO_NHAN_VIEN),
+        'mat_khau_phien' => hash('sha256', (string) ($nguoiDung['password_hash'] ?? '')),
     ];
     $_SESSION['dang_nhap_luc'] = time();
     $_SESSION['hoat_dong_cuoi'] = time();
@@ -148,43 +149,17 @@ function phien_nguoi_dung_con_hop_le(): bool
     }
 
     $banGhi = lay_mot_dong(
-        'SELECT role, status FROM users WHERE id = :id LIMIT 1',
+        'SELECT role, status, password_hash FROM users WHERE id = :id LIMIT 1',
         ['id' => $maNguoiDung]
     );
 
     return $banGhi !== null
         && $banGhi['status'] === TRANG_THAI_HOAT_DONG
-        && $banGhi['role'] === ($nguoiDung['vai_tro'] ?? '');
-}
-
-function dang_nhap_bi_tam_khoa(string $taiKhoan): bool
-{
-    $khoa = khoa_thu_dang_nhap($taiKhoan);
-    $duLieu = $_SESSION['thu_dang_nhap'][$khoa] ?? null;
-
-    return is_array($duLieu)
-        && (int) ($duLieu['so_lan'] ?? 0) >= 5
-        && time() - (int) ($duLieu['luc_cuoi'] ?? 0) < 300;
-}
-
-function ghi_nhan_dang_nhap_that_bai(string $taiKhoan): void
-{
-    $khoa = khoa_thu_dang_nhap($taiKhoan);
-    $duLieu = $_SESSION['thu_dang_nhap'][$khoa] ?? ['so_lan' => 0, 'luc_cuoi' => 0];
-    $_SESSION['thu_dang_nhap'][$khoa] = [
-        'so_lan' => (int) ($duLieu['so_lan'] ?? 0) + 1,
-        'luc_cuoi' => time(),
-    ];
-}
-
-function xoa_thu_dang_nhap(string $taiKhoan): void
-{
-    unset($_SESSION['thu_dang_nhap'][khoa_thu_dang_nhap($taiKhoan)]);
-}
-
-function khoa_thu_dang_nhap(string $taiKhoan): string
-{
-    return hash('sha256', mb_strtolower(trim($taiKhoan), 'UTF-8') . '|' . ($_SERVER['REMOTE_ADDR'] ?? 'local'));
+        && $banGhi['role'] === ($nguoiDung['vai_tro'] ?? '')
+        && hash_equals(
+            (string) ($nguoiDung['mat_khau_phien'] ?? ''),
+            hash('sha256', (string) ($banGhi['password_hash'] ?? ''))
+        );
 }
 
 function mat_khau_hop_le(string $matKhau, string $hash): bool

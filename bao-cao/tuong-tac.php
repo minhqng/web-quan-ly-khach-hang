@@ -4,21 +4,28 @@ declare(strict_types=1);
 
 require __DIR__ . '/../dung-chung/khoi-dong.php';
 require __DIR__ . '/../dung-chung/kiem-tra-dang-nhap.php';
-require_once __DIR__ . '/du-lieu-bao-cao.php';
-
-$boLocBaoCao = lay_bo_loc_bao_cao();
-$danhSachNhanVienBaoCao = lay_lua_chon_nhan_vien_bao_cao();
-$danhSachLoaiBaoCao = lay_lua_chon_loai_khach_hang_bao_cao();
-$theoThoiGian = lay_tuong_tac_theo_thoi_gian_bao_cao($boLocBaoCao);
-$theoLoai = lay_tuong_tac_theo_loai_bao_cao($boLocBaoCao);
-$theoNhanVien = lay_tuong_tac_theo_nhan_vien_bao_cao($boLocBaoCao);
-$nhanTuongTac = nhan_tuong_tac_bao_cao();
-$tong30Ngay = tong_cot_bao_cao($theoThoiGian);
-$tongTatCa = tong_cot_bao_cao($theoLoai);
-$mocCaoNhat = max(1, ...array_map(static fn (array $dong): int => (int) $dong['total'], $theoThoiGian ?: [['total' => 0]]));
-$nhanVienCoHoatDong = count(array_filter($theoNhanVien, static fn (array $dong): bool => (int) $dong['total'] > 0));
 
 $tieuDe = 'Báo cáo tương tác';
+try {
+    require_once __DIR__ . '/du-lieu-bao-cao.php';
+    $boLocBaoCao = lay_bo_loc_bao_cao();
+    $danhSachNhanVienBaoCao = lay_lua_chon_nhan_vien_bao_cao();
+    $danhSachLoaiBaoCao = lay_lua_chon_loai_khach_hang_bao_cao();
+    $theoThoiGian = lay_tuong_tac_theo_thoi_gian_bao_cao($boLocBaoCao);
+    $theoLoai = lay_tuong_tac_theo_loai_bao_cao($boLocBaoCao);
+    $theoNhanVien = lay_tuong_tac_theo_nhan_vien_bao_cao($boLocBaoCao);
+    $nhanTuongTac = nhan_tuong_tac_bao_cao();
+    $tong30Ngay = tong_cot_bao_cao($theoThoiGian);
+    $tongTatCa = tong_cot_bao_cao($theoLoai);
+    $mocCaoNhat = max(1, ...array_map(static fn (array $dong): int => (int) $dong['total'], $theoThoiGian ?: [['total' => 0]]));
+    $nhanVienCoHoatDong = count(array_filter($theoNhanVien, static fn (array $dong): bool => (int) $dong['total'] > 0));
+    $nhanKpiTuongTac = ($boLocBaoCao['tu_ngay'] !== '' || $boLocBaoCao['den_ngay'] !== '')
+        ? 'Tương tác theo lọc'
+        : 'Tương tác 30 ngày';
+} catch (Throwable) {
+    hien_thi_loi_du_lieu($tieuDe, 'Không thể tải báo cáo tương tác. Vui lòng kiểm tra kết nối cơ sở dữ liệu và dữ liệu demo.');
+}
+
 require __DIR__ . '/../giao-dien/dau-trang.php';
 ?>
 <div class="page-header">
@@ -34,7 +41,7 @@ require __DIR__ . '/../giao-dien/dau-trang.php';
 
 <section class="report-stat-grid">
     <article class="stat-card">
-        <div class="stat-label">Tương tác 30 ngày</div>
+        <div class="stat-label"><?= e($nhanKpiTuongTac) ?></div>
         <div class="stat-value number"><?= e(number_format($tong30Ngay, 0, ',', '.')) ?></div>
         <p class="text-muted mb-0">Dùng cho demo xu hướng chăm sóc</p>
     </article>
@@ -94,6 +101,9 @@ require __DIR__ . '/../giao-dien/dau-trang.php';
                     <div class="report-row-meta"><span>Tỷ trọng</span><span><?= e($tyLe . '%') ?></span></div>
                 </div>
             <?php endforeach; ?>
+            <?php if ($theoLoai === []): ?>
+                <p class="text-muted mb-0">Chưa có dữ liệu kênh liên hệ phù hợp với bộ lọc.</p>
+            <?php endif; ?>
         </div>
     </article>
 </section>

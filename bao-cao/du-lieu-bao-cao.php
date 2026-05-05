@@ -11,6 +11,7 @@ function lay_tong_quan_bao_cao(array $boLoc = []): array
     $locKhach = dieu_kien_loc_khach_hang_bao_cao($boLoc, 'c', 'overview_customer');
     $ngayKhach = dieu_kien_ngay_bao_cao($boLoc, 'c.created_at', 'overview_customer');
     $ngayTuongTac = dieu_kien_ngay_bao_cao($boLoc, 'i.interaction_at', 'overview_interaction');
+    $macDinhTuongTac30Ngay = $ngayTuongTac['sql'] === '' ? ' AND i.interaction_at >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)' : '';
     $ngayViec = dieu_kien_ngay_bao_cao($boLoc, 't.due_at', 'overview_task');
     $sqlKhach = $locKhach['sql'] . $ngayKhach['sql'];
     $thamSoKhach = $locKhach['tham_so'] + $ngayKhach['tham_so'];
@@ -23,7 +24,7 @@ function lay_tong_quan_bao_cao(array $boLoc = []): array
         "SELECT COUNT(*)
          FROM interactions i
          INNER JOIN customers c ON c.id = i.customer_id
-         WHERE c.deleted_at IS NULL{$locKhach['sql']}{$ngayTuongTac['sql']}",
+         WHERE c.deleted_at IS NULL{$locKhach['sql']}{$ngayTuongTac['sql']}{$macDinhTuongTac30Ngay}",
         $locKhach['tham_so'] + $ngayTuongTac['tham_so']
     );
     $viecDangMo = (int) lay_mot_gia_tri(
@@ -141,9 +142,6 @@ function lay_tuong_tac_theo_nhan_vien_bao_cao(array $boLoc = []): array
 {
     $loc = dieu_kien_loc_khach_hang_bao_cao($boLoc, 'c', 'staff_interaction');
     $ngay = dieu_kien_ngay_bao_cao($boLoc, 'i.interaction_at', 'staff_interaction');
-    $locNhanVien = (int) ($boLoc['staff_id'] ?? 0) > 0 ? ' AND u.id = :interaction_user_id' : '';
-    $thamSoNhanVien = (int) ($boLoc['staff_id'] ?? 0) > 0 ? ['interaction_user_id' => (int) $boLoc['staff_id']] : [];
-
     return lay_nhieu_dong(
         "SELECT u.full_name AS staff_name,
             COUNT(c.id) AS total,
@@ -151,10 +149,10 @@ function lay_tuong_tac_theo_nhan_vien_bao_cao(array $boLoc = []): array
          FROM users u
          LEFT JOIN interactions i ON i.user_id = u.id{$ngay['sql']}
          LEFT JOIN customers c ON c.id = i.customer_id AND c.deleted_at IS NULL{$loc['sql']}
-         WHERE u.role = 'staff' AND u.status = 'active'{$locNhanVien}
-         GROUP BY u.id, u.full_name
-         ORDER BY total DESC, u.full_name ASC",
-        $loc['tham_so'] + $ngay['tham_so'] + $thamSoNhanVien
+          WHERE u.role = 'staff' AND u.status = 'active'
+          GROUP BY u.id, u.full_name
+          ORDER BY total DESC, u.full_name ASC",
+        $loc['tham_so'] + $ngay['tham_so']
     );
 }
 

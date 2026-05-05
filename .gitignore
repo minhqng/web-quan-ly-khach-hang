@@ -5,6 +5,7 @@
 # Logs
 nhat-ky/*.log
 nhat-ky/*.txt
+nhat-ky/*.json
 !nhat-ky/README.md
 !nhat-ky/.gitignore
 

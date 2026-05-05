@@ -15,7 +15,7 @@ $danhSachLoaiBaoCao = $danhSachLoaiBaoCao ?? lay_lua_chon_loai_khach_hang_bao_ca
             <input class="form-control" id="den_ngay" name="den_ngay" type="date" value="<?= e($boLocBaoCao['den_ngay']) ?>">
         </div>
         <div class="col-md-6 col-lg-3">
-            <label class="form-label" for="staff_id">Nhân viên</label>
+            <label class="form-label" for="staff_id">Nhân viên phụ trách</label>
             <select class="form-select" id="staff_id" name="staff_id" <?= la_admin() ? '' : 'disabled' ?>>
                 <option value="">Tất cả nhân viên</option>
                 <?php foreach ($danhSachNhanVienBaoCao as $nhanVien): ?>

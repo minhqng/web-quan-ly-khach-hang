@@ -26,17 +26,18 @@ async function updateTaskStatus(select, feedback) {
             },
             body: formData,
         });
-        const data = await response.json();
-        if (!data.thanh_cong) throw new Error(data.thong_bao || 'Không thể cập nhật.');
+        const data = await readJsonResponse(response);
+        if (!response.ok || !data.thanh_cong) throw new Error(data.thong_bao || 'Không thể cập nhật.');
 
         select.dataset.previousValue = select.value;
         updateTaskRow(select, data.du_lieu);
+        removeTaskRowIfOutsideFilter(select, data.du_lieu, feedback);
         setTaskFeedback(feedback, data.thong_bao || 'Đã cập nhật');
-    } catch {
+    } catch (error) {
         select.value = select.dataset.previousValue || select.value;
-        setTaskFeedback(feedback, 'Không thể cập nhật trạng thái.');
+        setTaskFeedback(feedback, error.message || 'Không thể cập nhật trạng thái.');
     } finally {
-        select.disabled = false;
+        select.disabled = select.dataset.finalState === '1';
     }
 }
 
@@ -55,8 +56,36 @@ function updateTaskRow(select, data) {
     const dueLabel = row.querySelector('.task-due-cell span');
     if (dueLabel && data.due_label) dueLabel.textContent = data.due_label;
 
-    const completeButton = row.querySelector('[data-task-complete-form] button');
-    if (completeButton) completeButton.disabled = !data.is_open;
+    const completeForm = row.querySelector('[data-task-complete-form]');
+    if (completeForm && !data.is_open) completeForm.remove();
+    select.dataset.finalState = data.is_open ? '' : '1';
+}
+
+function removeTaskRowIfOutsideFilter(select, data, feedback) {
+    const row = select.closest('[data-task-row]');
+    const board = select.closest('[data-task-board]');
+    const mode = board?.getAttribute('data-task-board-mode') || 'my';
+    if (!row || !data || mode === 'my') return;
+
+    const stillMatches = mode === 'overdue'
+        ? Boolean(data.is_open && data.is_overdue)
+        : Boolean(data.is_open && !data.is_overdue);
+
+    if (stillMatches) return;
+
+    const tbody = row.parentElement;
+    row.remove();
+    setTaskFeedback(feedback, 'Đã cập nhật, công việc đã rời khỏi bộ lọc hiện tại.');
+
+    if (tbody && tbody.querySelectorAll('[data-task-row]').length === 0) {
+        const emptyRow = document.createElement('tr');
+        const emptyCell = document.createElement('td');
+        emptyCell.className = 'table-empty-state';
+        emptyCell.colSpan = 7;
+        emptyCell.textContent = 'Không còn công việc phù hợp với bộ lọc hiện tại.';
+        emptyRow.append(emptyCell);
+        tbody.append(emptyRow);
+    }
 }
 
 function setTaskFeedback(feedback, message) {

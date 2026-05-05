@@ -29,7 +29,8 @@ async function checkDuplicateField(form, input, customerId) {
     try {
         target.textContent = 'Đang kiểm tra...';
         const response = await fetch(`${appBaseUrl()}xu-ly-ajax/kiem-tra-trung-khach-hang.php?${params}`);
-        const data = await response.json();
+        const data = await readJsonResponse(response);
+        if (!response.ok || !data.thanh_cong) throw new Error(data.thong_bao || '');
         setDuplicateState(target, data.thong_bao || '', Boolean(data.bi_trung), data.thanh_cong && !data.bi_trung);
     } catch {
         setDuplicateState(target, '');

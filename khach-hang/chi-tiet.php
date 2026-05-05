@@ -15,7 +15,7 @@ if (!$khachHang) {
     chuyen_huong('khach-hang/');
 }
 
-$tuongTacGanDay = lay_tuong_tac_cua_khach_hang_day_du($id, 8);
+$tuongTacGanDay = lay_tuong_tac_cua_khach_hang_day_du($id, 8, !empty($khachHang['deleted_at']));
 $congViecTheoDoi = lay_cong_viec_cua_khach_hang($id);
 $nhanCongViec = ['pending' => 'Chờ xử lý', 'in_progress' => 'Đang xử lý', 'completed' => 'Hoàn thành', 'cancelled' => 'Đã hủy'];
 $lopCongViec = ['pending' => 'badge-soft-warning', 'in_progress' => 'badge-soft-primary', 'completed' => 'badge-soft-success', 'cancelled' => 'badge-soft-danger'];

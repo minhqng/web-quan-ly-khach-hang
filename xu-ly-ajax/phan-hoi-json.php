@@ -12,11 +12,27 @@ function tra_ve_json(array $duLieu, int $maTrangThai = 200): never
     exit;
 }
 
-if (!da_dang_nhap()) {
+if (phien_dang_nhap_het_han()) {
+    dang_xuat_nguoi_dung();
+    tra_ve_json([
+        'thanh_cong' => false,
+        'thong_bao' => 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.',
+    ], 401);
+}
+
+if (!isset($_SESSION['nguoi_dung'])) {
     tra_ve_json([
         'thanh_cong' => false,
         'thong_bao' => 'Vui lòng đăng nhập để tiếp tục.',
     ], 401);
+}
+
+if (!phien_nguoi_dung_con_hop_le()) {
+    dang_xuat_nguoi_dung();
+    tra_ve_json([
+        'thanh_cong' => false,
+        'thong_bao' => 'Tài khoản đã thay đổi trạng thái. Vui lòng đăng nhập lại.',
+    ], 403);
 }
 
 cap_nhat_hoat_dong_phien();

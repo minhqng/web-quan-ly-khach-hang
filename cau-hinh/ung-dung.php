@@ -11,3 +11,7 @@ defined('TEN_SESSION') || define('TEN_SESSION', 'QLKH_SESSION');
 defined('THOI_GIAN_HET_HAN_SESSION') || define('THOI_GIAN_HET_HAN_SESSION', 1800);
 
 date_default_timezone_set(MUI_GIO);
+
+if (PHP_SAPI !== 'cli' && !headers_sent()) {
+    header('Content-Type: text/html; charset=utf-8');
+}

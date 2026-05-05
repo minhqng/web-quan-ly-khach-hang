@@ -125,7 +125,8 @@ function lay_top_khach_hang_bang_dieu_khien(?int $maNhanVien): array
             FROM follow_up_tasks
             GROUP BY customer_id
          ) t ON t.customer_id = c.id
-         WHERE c.deleted_at IS NULL{$phamViSql}
+          WHERE c.deleted_at IS NULL
+            AND c.status IN ('active', 'potential'){$phamViSql}
          ORDER BY care_score DESC, i.last_interaction_at DESC, c.created_at DESC
          LIMIT 3",
         $thamSo

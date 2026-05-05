@@ -4,20 +4,24 @@ declare(strict_types=1);
 
 require __DIR__ . '/../dung-chung/khoi-dong.php';
 require __DIR__ . '/../dung-chung/kiem-tra-dang-nhap.php';
-require_once __DIR__ . '/du-lieu-bao-cao.php';
-
-$boLocBaoCao = lay_bo_loc_bao_cao();
-$danhSachNhanVienBaoCao = lay_lua_chon_nhan_vien_bao_cao();
-$danhSachLoaiBaoCao = lay_lua_chon_loai_khach_hang_bao_cao();
-$theoLoai = lay_khach_hang_theo_loai_bao_cao($boLocBaoCao);
-$theoNhanVien = lay_khach_hang_theo_nhan_vien_bao_cao($boLocBaoCao);
-$tongKhach = tong_cot_bao_cao($theoLoai);
-$tongTheoNhanVien = max(1, tong_cot_bao_cao($theoNhanVien));
-$tongDangChamSoc = tong_cot_bao_cao($theoLoai, 'active_count');
-$tongTiemNang = tong_cot_bao_cao($theoLoai, 'potential_count');
-$nhanTrangThai = nhan_trang_thai_khach_bao_cao();
 
 $tieuDe = 'Báo cáo khách hàng';
+try {
+    require_once __DIR__ . '/du-lieu-bao-cao.php';
+    $boLocBaoCao = lay_bo_loc_bao_cao();
+    $danhSachNhanVienBaoCao = lay_lua_chon_nhan_vien_bao_cao();
+    $danhSachLoaiBaoCao = lay_lua_chon_loai_khach_hang_bao_cao();
+    $theoLoai = lay_khach_hang_theo_loai_bao_cao($boLocBaoCao);
+    $theoNhanVien = lay_khach_hang_theo_nhan_vien_bao_cao($boLocBaoCao);
+    $tongKhach = tong_cot_bao_cao($theoLoai);
+    $tongTheoNhanVien = max(1, tong_cot_bao_cao($theoNhanVien));
+    $tongDangChamSoc = tong_cot_bao_cao($theoLoai, 'active_count');
+    $tongTiemNang = tong_cot_bao_cao($theoLoai, 'potential_count');
+    $nhanTrangThai = nhan_trang_thai_khach_bao_cao();
+} catch (Throwable) {
+    hien_thi_loi_du_lieu($tieuDe, 'Không thể tải báo cáo khách hàng. Vui lòng kiểm tra kết nối cơ sở dữ liệu và dữ liệu demo.');
+}
+
 require __DIR__ . '/../giao-dien/dau-trang.php';
 ?>
 <div class="page-header">

@@ -40,9 +40,9 @@ function lay_tuong_tac_theo_id(int $id): ?array
     );
 }
 
-function lay_danh_sach_tuong_tac(int $maKhachHang = 0, int $gioiHan = 40): array
+function lay_danh_sach_tuong_tac(int $maKhachHang = 0, int $gioiHan = 40, bool $choPhepKhachDaXoa = false): array
 {
-    $where = 'WHERE c.deleted_at IS NULL';
+    $where = $choPhepKhachDaXoa ? 'WHERE 1 = 1' : 'WHERE c.deleted_at IS NULL';
     [$phamViSql, $thamSo] = dieu_kien_pham_vi_khach_hang_tuong_tac('c', 'scope_interaction_list');
     $where .= $phamViSql;
 
@@ -65,9 +65,9 @@ function lay_danh_sach_tuong_tac(int $maKhachHang = 0, int $gioiHan = 40): array
     );
 }
 
-function lay_tuong_tac_cua_khach_hang_day_du(int $maKhachHang, int $gioiHan = 8): array
+function lay_tuong_tac_cua_khach_hang_day_du(int $maKhachHang, int $gioiHan = 8, bool $choPhepKhachDaXoa = false): array
 {
-    return lay_danh_sach_tuong_tac($maKhachHang, $gioiHan);
+    return lay_danh_sach_tuong_tac($maKhachHang, $gioiHan, $choPhepKhachDaXoa);
 }
 
 function co_the_sua_xoa_tuong_tac(array $tuongTac): bool

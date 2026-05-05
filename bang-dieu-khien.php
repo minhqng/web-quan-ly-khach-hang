@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 require __DIR__ . '/dung-chung/khoi-dong.php';
 require __DIR__ . '/dung-chung/kiem-tra-dang-nhap.php';
-require __DIR__ . '/bao-cao/du-lieu-bang-dieu-khien.php';
+try {
+    require __DIR__ . '/bao-cao/du-lieu-bang-dieu-khien.php';
+    $duLieuBangDieuKhien = lay_du_lieu_bang_dieu_khien();
+} catch (Throwable) {
+    hien_thi_loi_du_lieu('Bảng điều khiển', 'Không thể tải dashboard. Vui lòng kiểm tra kết nối cơ sở dữ liệu và dữ liệu demo.');
+}
 
-$duLieuBangDieuKhien = lay_du_lieu_bang_dieu_khien();
 $kpiCards = $duLieuBangDieuKhien['kpi'];
 $topKhachHang = $duLieuBangDieuKhien['top_khach_hang'];
 $congViecSapToi = $duLieuBangDieuKhien['cong_viec_sap_toi'];

@@ -33,16 +33,16 @@ async function loadCustomers(form, page) {
     try {
         setCustomerLoading(true, status);
         const response = await fetch(`${appBaseUrl()}xu-ly-ajax/loc-khach-hang.php?${params}`);
-        const data = await response.json();
-        if (!data.thanh_cong) throw new Error(data.thong_bao || 'Không thể tải danh sách.');
+        const data = await readJsonResponse(response);
+        if (!response.ok || !data.thanh_cong) throw new Error(data.thong_bao || 'Không thể tải danh sách.');
 
         renderCustomerRows(body, data.khach_hang || []);
         renderCustomerPagination(data.phan_trang || {});
         document.querySelector('[data-customer-total]').textContent = data.tong_dong || 0;
         window.history.replaceState(null, '', `${window.location.pathname}?${params}`);
         if (status) status.textContent = 'Đã cập nhật';
-    } catch {
-        if (status) status.textContent = 'Không thể tải dữ liệu AJAX';
+    } catch (error) {
+        if (status) status.textContent = error.message || 'Không thể tải dữ liệu AJAX';
     } finally {
         setCustomerLoading(false, status);
     }

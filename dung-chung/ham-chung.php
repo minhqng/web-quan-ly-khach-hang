@@ -81,3 +81,20 @@ function yeu_cau_csrf(string $duongDanQuayLai = 'bang-dieu-khien.php'): void
         chuyen_huong($duongDanQuayLai);
     }
 }
+
+function hien_thi_loi_du_lieu(string $tieuDeTrang, string $noiDung): never
+{
+    $tieuDe = $tieuDeTrang;
+
+    require __DIR__ . '/../giao-dien/dau-trang.php';
+    echo '<div class="page-header"><div><p class="eyebrow">Dữ liệu</p><h1 class="page-title">'
+        . e($tieuDeTrang)
+        . '</h1><p class="page-subtitle">'
+        . e($noiDung)
+        . '</p></div></div>';
+    echo '<section class="surface-card empty-state-inline"><strong>Chưa thể tải dữ liệu</strong>'
+        . '<p>Kiểm tra MySQL trong XAMPP và import file <code>co-so-du-lieu/khoi-tao-co-so-du-lieu.sql</code>.</p>'
+        . '<a class="btn btn-primary" href="' . e(duong_dan('dang-nhap.php')) . '">Về đăng nhập</a></section>';
+    require __DIR__ . '/../giao-dien/cuoi-trang.php';
+    exit;
+}

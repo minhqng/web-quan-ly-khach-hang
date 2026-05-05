@@ -60,8 +60,8 @@ function kiem_tra_du_lieu_tuong_tac(array $duLieu, bool $choTaoCongViec = true):
         $loi['result'] = 'Kết quả không được vượt quá 150 ký tự.';
     }
 
-    $thoiGianTuongTac = $duLieu['interaction_at'] !== '' ? strtotime($duLieu['interaction_at']) : false;
-    if ($thoiGianTuongTac === false) {
+    $thoiGianTuongTac = timestamp_tu_datetime_html($duLieu['interaction_at']);
+    if ($thoiGianTuongTac === null) {
         $loi['interaction_at'] = 'Thời gian tương tác không hợp lệ.';
     } elseif ($thoiGianTuongTac > time() + 300) {
         $loi['interaction_at'] = 'Thời gian tương tác không được ở tương lai.';
@@ -83,7 +83,7 @@ function kiem_tra_cong_viec_tu_tuong_tac(array $duLieu): array
         $loi['task_title'] = 'Tiêu đề công việc không được vượt quá 150 ký tự.';
     }
 
-    if ($duLieu['task_due_at'] === '' || strtotime($duLieu['task_due_at']) === false) {
+    if (!thoi_gian_html_hop_le($duLieu['task_due_at'])) {
         $loi['task_due_at'] = 'Hạn xử lý công việc không hợp lệ.';
     }
 
@@ -96,5 +96,5 @@ function kiem_tra_cong_viec_tu_tuong_tac(array $duLieu): array
 
 function gia_tri_datetime_mysql(string $giaTri): string
 {
-    return date('Y-m-d H:i:s', strtotime($giaTri) ?: time());
+    return datetime_mysql_tu_html($giaTri);
 }

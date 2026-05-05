@@ -18,16 +18,22 @@ if (la_post()) {
     $loi = kiem_tra_du_lieu_tuong_tac($duLieu, true);
 
     if ($loi === []) {
-        tao_tuong_tac($duLieu);
-        thong_bao_thanh_cong(
-            (int) $duLieu['create_follow_up'] === 1
-                ? 'Đã ghi nhận tương tác và tạo công việc theo dõi.'
-                : 'Đã ghi nhận tương tác khách hàng.'
-        );
-        chuyen_huong('khach-hang/chi-tiet.php?id=' . $duLieu['customer_id']);
+        try {
+            tao_tuong_tac($duLieu);
+            thong_bao_thanh_cong(
+                (int) $duLieu['create_follow_up'] === 1
+                    ? 'Đã ghi nhận tương tác và tạo công việc theo dõi.'
+                    : 'Đã ghi nhận tương tác khách hàng.'
+            );
+            chuyen_huong('khach-hang/chi-tiet.php?id=' . $duLieu['customer_id']);
+        } catch (Throwable) {
+            thong_bao_loi('Không thể ghi nhận tương tác lúc này. Vui lòng kiểm tra nhân viên phụ trách và thử lại.');
+        }
     }
 
-    thong_bao_loi('Vui lòng kiểm tra lại thông tin tương tác.');
+    if ($loi !== []) {
+        thong_bao_loi('Vui lòng kiểm tra lại thông tin tương tác.');
+    }
 }
 
 $tieuDe = 'Thêm tương tác';

@@ -19,7 +19,7 @@ $lopTab = static fn (string $tep): string => $tepHienTai === $tep ? ' is-active'
     <a class="btn btn-primary" href="<?= e(duong_dan('cong-viec-theo-doi/them.php')) ?>">Thêm công việc</a>
 </div>
 
-<section class="table-card task-board task-board--<?= e($cheDo) ?>" data-task-board>
+<section class="table-card task-board task-board--<?= e($cheDo) ?>" data-task-board data-task-board-mode="<?= e($cheDo) ?>">
     <div class="task-board-heading table-panel-heading">
         <div>
             <h2 class="card-title mb-1"><?= e($tieuDeDanhSach) ?></h2>

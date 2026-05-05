@@ -54,7 +54,7 @@ function kiem_tra_du_lieu_cong_viec(array $duLieu, ?array $congViecHienTai = nul
         $loi['title'] = 'Tiêu đề không được vượt quá 150 ký tự.';
     }
 
-    if ($duLieu['due_at'] === '' || strtotime($duLieu['due_at']) === false) {
+    if (!thoi_gian_html_hop_le($duLieu['due_at'])) {
         $loi['due_at'] = 'Hạn xử lý không hợp lệ.';
     }
 
@@ -103,5 +103,5 @@ function lua_chon_trang_thai_cong_viec(string $hienTai): array
 
 function datetime_mysql_cong_viec(string $giaTri): string
 {
-    return date('Y-m-d H:i:s', strtotime($giaTri) ?: time());
+    return datetime_mysql_tu_html($giaTri);
 }

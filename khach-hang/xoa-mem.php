@@ -15,8 +15,12 @@ if ($id <= 0) {
     chuyen_huong('khach-hang/');
 }
 
-if (xoa_mem_khach_hang($id)) {
+$ketQua = xoa_mem_khach_hang($id);
+
+if ($ketQua === 'da_xoa') {
     thong_bao_thanh_cong('Đã xóa mềm khách hàng. Có thể khôi phục nếu chưa bị trùng liên hệ.');
+} elseif ($ketQua === 'co_cong_viec_mo') {
+    thong_bao_canh_bao('Không thể xóa mềm vì khách hàng còn công việc đang mở. Hãy hoàn thành hoặc hủy công việc trước.');
 } else {
     thong_bao_canh_bao('Khách hàng không tồn tại hoặc đã được xóa mềm trước đó.');
 }
