@@ -88,6 +88,12 @@
     margin: var(--space-3) 0 0;
 }
 
+.dashboard-list .empty-state-inline,
+.dashboard-timeline .empty-state-inline {
+    margin-top: var(--space-3);
+    text-align: left;
+}
+
 @media (max-width: 760px) {
     .dashboard-list-row {
         grid-template-columns: 1fr;

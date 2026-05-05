@@ -27,8 +27,13 @@ function cellText(text) {
 function customerNameBlock(customer) {
     const div = document.createElement('div');
     div.className = 'customer-name-cell';
-    div.append(textElement('strong', customer.full_name), textElement('span', customer.subtitle));
-    div.append(textElement('small', `${customer.interaction_count} tương tác · Lịch tới: ${customer.next_task_label}`));
+    const link = textElement('a', customer.full_name);
+    link.href = customer.detail_url;
+    link.className = 'customer-main-link';
+    const due = textElement('span', customer.next_task_label || 'Chưa có lịch');
+    due.className = 'customer-due-badge';
+    div.append(link, textElement('span', customer.subtitle));
+    div.append(textElement('small', `${customer.interaction_count} tương tác`), due);
     return div;
 }
 
@@ -54,8 +59,8 @@ function statusBadge(customer) {
 
 function rowActions(customer) {
     const wrap = document.createElement('div');
-    wrap.className = 'customer-row-actions';
-    wrap.append(actionLink('Xem', customer.detail_url, 'btn-outline-primary'));
+    wrap.className = 'customer-row-actions row-actions justify-content-end';
+    wrap.append(actionLink('Xem', customer.detail_url, 'btn-outline-secondary'));
     if (customer.is_deleted && customer.can_manage_delete) {
         wrap.append(actionForm(customer.restore_url, customer.id, 'Khôi phục', 'btn-outline-success'));
     } else if (!customer.is_deleted) {

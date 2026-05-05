@@ -6,22 +6,21 @@ $tieuDeDanhSach = $tieuDeDanhSach ?? 'Danh sách công việc';
 $moTaDanhSach = $moTaDanhSach ?? 'Theo dõi hạn xử lý, người phụ trách và trạng thái công việc chăm sóc khách hàng.';
 $thongDiepRong = $thongDiepRong ?? 'Chưa có công việc theo dõi.';
 $nhanTrangThai = nhan_trang_thai_cong_viec();
-$nhanTrangThaiChinh = nhan_trang_thai_chinh_cong_viec();
 $nhanUuTien = nhan_uu_tien_cong_viec();
 $tepHienTai = basename(str_replace('\\', '/', $_SERVER['SCRIPT_NAME'] ?? 'index.php'));
 $lopTab = static fn (string $tep): string => $tepHienTai === $tep ? ' is-active' : '';
 ?>
 <div class="follow-up-nav">
-    <div class="follow-up-tabs" aria-label="Bộ lọc công việc theo dõi">
-        <a class="follow-up-tab<?= e($lopTab('index.php')) ?>" href="<?= e(duong_dan('cong-viec-theo-doi/')) ?>">Công việc của tôi</a>
-        <a class="follow-up-tab<?= e($lopTab('qua-han.php')) ?>" href="<?= e(duong_dan('cong-viec-theo-doi/qua-han.php')) ?>">Quá hạn</a>
-        <a class="follow-up-tab<?= e($lopTab('sap-toi.php')) ?>" href="<?= e(duong_dan('cong-viec-theo-doi/sap-toi.php')) ?>">Sắp tới</a>
+    <div class="follow-up-tabs segmented-nav" aria-label="Bộ lọc công việc theo dõi">
+        <a class="follow-up-tab segmented-nav-link<?= e($lopTab('index.php')) ?>" href="<?= e(duong_dan('cong-viec-theo-doi/')) ?>">Công việc của tôi</a>
+        <a class="follow-up-tab segmented-nav-link<?= e($lopTab('qua-han.php')) ?>" href="<?= e(duong_dan('cong-viec-theo-doi/qua-han.php')) ?>">Quá hạn</a>
+        <a class="follow-up-tab segmented-nav-link<?= e($lopTab('sap-toi.php')) ?>" href="<?= e(duong_dan('cong-viec-theo-doi/sap-toi.php')) ?>">Sắp tới</a>
     </div>
     <a class="btn btn-primary" href="<?= e(duong_dan('cong-viec-theo-doi/them.php')) ?>">Thêm công việc</a>
 </div>
 
 <section class="table-card task-board task-board--<?= e($cheDo) ?>" data-task-board>
-    <div class="task-board-heading">
+    <div class="task-board-heading table-panel-heading">
         <div>
             <h2 class="card-title mb-1"><?= e($tieuDeDanhSach) ?></h2>
             <p class="text-muted mb-0"><?= e($moTaDanhSach) ?></p>
@@ -49,14 +48,7 @@ $lopTab = static fn (string $tep): string => $tepHienTai === $tep ? ' is-active'
                     $quaHan = la_cong_viec_qua_han($congViec);
                     $lopDong = trim(($quaHan ? 'is-overdue ' : '') . (!$dangMo ? 'is-finished' : ''));
                     $nhanHan = $quaHan ? 'Quá hạn' : ($dangMo ? 'Đang theo dõi' : 'Đã đóng');
-                    $luaChonTrangThai = $congViec['status'] === 'in_progress'
-                        ? [
-                            'pending' => $nhanTrangThai['pending'],
-                            'in_progress' => $nhanTrangThai['in_progress'],
-                            'completed' => $nhanTrangThai['completed'],
-                            'cancelled' => $nhanTrangThai['cancelled'],
-                        ]
-                        : $nhanTrangThaiChinh;
+                    $luaChonTrangThai = lua_chon_trang_thai_cong_viec($congViec['status']);
                     ?>
                     <tr class="<?= e($lopDong) ?>" data-task-row="<?= e($congViec['id']) ?>" data-task-status="<?= e($congViec['status']) ?>">
                         <td>
@@ -94,7 +86,7 @@ $lopTab = static fn (string $tep): string => $tepHienTai === $tep ? ' is-active'
                             </div>
                         </td>
                         <td>
-                            <div class="task-row-actions">
+                            <div class="task-row-actions row-actions">
                                 <a class="btn btn-sm btn-outline-secondary" href="<?= e(duong_dan('cong-viec-theo-doi/sua.php?id=' . $congViec['id'])) ?>">Sửa</a>
                                 <?php if ($dangMo): ?>
                                     <form method="post" action="<?= e(duong_dan('cong-viec-theo-doi/hoan-thanh.php')) ?>" data-task-complete-form>
@@ -108,7 +100,15 @@ $lopTab = static fn (string $tep): string => $tepHienTai === $tep ? ' is-active'
                     </tr>
                 <?php endforeach; ?>
                 <?php if ($danhSachCongViec === []): ?>
-                    <tr><td class="table-empty-state text-center text-muted py-5" colspan="7"><?= e($thongDiepRong) ?></td></tr>
+                    <tr>
+                        <td class="table-empty-state" colspan="7">
+                            <div class="empty-state-inline mx-auto">
+                                <strong><?= e($thongDiepRong) ?></strong>
+                                <p>Tạo công việc theo dõi để lịch chăm sóc không bị bỏ sót.</p>
+                                <a class="btn btn-sm btn-primary" href="<?= e(duong_dan('cong-viec-theo-doi/them.php')) ?>">Thêm công việc</a>
+                            </div>
+                        </td>
+                    </tr>
                 <?php endif; ?>
             </tbody>
         </table>

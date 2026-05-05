@@ -18,15 +18,20 @@ if (la_post()) {
 
     if ($taiKhoan === '' || $matKhau === '') {
         $loiDangNhap = 'Vui lòng nhập đầy đủ tài khoản và mật khẩu.';
+    } elseif (dang_nhap_bi_tam_khoa($taiKhoan)) {
+        $loiDangNhap = 'Bạn nhập sai quá nhiều lần. Vui lòng thử lại sau 5 phút.';
     } else {
         try {
             $nguoiDung = tim_nguoi_dung_dang_nhap($taiKhoan);
 
             if (!$nguoiDung || !mat_khau_hop_le($matKhau, (string) $nguoiDung['password_hash'])) {
+                ghi_nhan_dang_nhap_that_bai($taiKhoan);
                 $loiDangNhap = 'Tài khoản hoặc mật khẩu không đúng.';
             } elseif ($nguoiDung['status'] !== TRANG_THAI_HOAT_DONG) {
+                ghi_nhan_dang_nhap_that_bai($taiKhoan);
                 $loiDangNhap = 'Tài khoản đang bị khóa. Vui lòng liên hệ quản trị viên.';
             } else {
+                xoa_thu_dang_nhap($taiKhoan);
                 dang_nhap_nguoi_dung($nguoiDung);
                 thuc_thi_lenh(
                     'UPDATE users SET last_login_at = NOW() WHERE id = :id',
@@ -96,7 +101,7 @@ if (la_post()) {
                 >
             </div>
             <button class="btn btn-primary w-100" type="submit">Đăng nhập</button>
-            <p class="login-hint">Tài khoản demo: <strong>admin</strong>, <strong>minhanh</strong>, <strong>quocbao</strong> / mật khẩu <strong>123456</strong>.</p>
+            <p class="login-hint">Tài khoản demo: <strong>admin</strong>, <strong>minhanh</strong>, <strong>quocbao</strong>, <strong>thutrang</strong> / mật khẩu <strong>123456</strong>.</p>
         </form>
     </section>
 </main>

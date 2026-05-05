@@ -17,6 +17,17 @@ function lay_lua_chon_loai_khach_hang(?int $idHienTai = null): array
 
 function lay_lua_chon_nhan_vien(): array
 {
+    $nguoiDung = nguoi_dung_hien_tai();
+
+    if (($nguoiDung['vai_tro'] ?? '') !== VAI_TRO_ADMIN) {
+        return lay_nhieu_dong(
+            "SELECT id, full_name, role
+             FROM users
+             WHERE id = :id AND status = 'active' AND role = 'staff'",
+            ['id' => (int) ($nguoiDung['id'] ?? 0)]
+        );
+    }
+
     return lay_nhieu_dong(
         "SELECT id, full_name, role
          FROM users
@@ -36,6 +47,16 @@ function loai_khach_hang_ton_tai(int $id): bool
 
 function nhan_vien_ton_tai(int $id): bool
 {
+    $nguoiDung = nguoi_dung_hien_tai();
+
+    if (($nguoiDung['vai_tro'] ?? '') !== VAI_TRO_ADMIN) {
+        return $id === (int) ($nguoiDung['id'] ?? 0)
+            && (int) lay_mot_gia_tri(
+                "SELECT COUNT(*) FROM users WHERE id = :id AND role = 'staff' AND status = 'active'",
+                ['id' => $id]
+            ) > 0;
+    }
+
     return (int) lay_mot_gia_tri(
         "SELECT COUNT(*) FROM users WHERE id = :id AND role = 'staff' AND status = 'active'",
         ['id' => $id]
@@ -100,6 +121,11 @@ function cap_nhat_khach_hang(int $id, array $duLieu): void
 {
     $thamSo = tham_so_luu_khach_hang($duLieu);
     $thamSo['id'] = $id;
+    [$phamViSql, $thamSoPhamVi] = dieu_kien_pham_vi_khach_hang('', 'update_scope_user_id');
+
+    if ($phamViSql !== '') {
+        $phamViSql = ' AND assigned_user_id = :update_scope_user_id';
+    }
 
     thuc_thi_lenh(
         'UPDATE customers
@@ -118,8 +144,8 @@ function cap_nhat_khach_hang(int $id, array $duLieu): void
              source = :source,
              status = :status,
              notes = :notes
-         WHERE id = :id',
-        $thamSo
+         WHERE id = :id' . $phamViSql,
+        $thamSo + $thamSoPhamVi
     );
 }
 

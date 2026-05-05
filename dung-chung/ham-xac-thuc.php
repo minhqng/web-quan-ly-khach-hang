@@ -43,12 +43,26 @@ function dang_nhap_nguoi_dung(array $nguoiDung): void
 
 function dang_xuat_nguoi_dung(): void
 {
+    $thamSoCookie = session_get_cookie_params();
     $_SESSION = [];
 
     if (session_status() === PHP_SESSION_ACTIVE) {
-        session_regenerate_id(true);
+        session_destroy();
     }
 
+    if (ini_get('session.use_cookies')) {
+        setcookie(session_name(), '', [
+            'expires' => time() - 42000,
+            'path' => $thamSoCookie['path'] ?: '/',
+            'domain' => $thamSoCookie['domain'] ?? '',
+            'secure' => (bool) ($thamSoCookie['secure'] ?? false),
+            'httponly' => (bool) ($thamSoCookie['httponly'] ?? true),
+            'samesite' => $thamSoCookie['samesite'] ?? 'Lax',
+        ]);
+    }
+
+    session_start();
+    session_regenerate_id(true);
     $_SESSION['khoi_tao_luc'] = time();
     $_SESSION['hoat_dong_cuoi'] = time();
     $_SESSION['tai_tao_luc'] = time();
@@ -86,6 +100,12 @@ function yeu_cau_dang_nhap(): void
         chuyen_huong('dang-nhap.php');
     }
 
+    if (!phien_nguoi_dung_con_hop_le()) {
+        dang_xuat_nguoi_dung();
+        thong_bao_canh_bao('Tài khoản đã thay đổi trạng thái. Vui lòng đăng nhập lại.');
+        chuyen_huong('dang-nhap.php');
+    }
+
     cap_nhat_hoat_dong_phien();
 }
 
@@ -116,6 +136,55 @@ function tim_nguoi_dung_dang_nhap(string $tenDangNhapHoacEmail): ?array
             'email' => $tenDangNhapHoacEmail,
         ]
     );
+}
+
+function phien_nguoi_dung_con_hop_le(): bool
+{
+    $nguoiDung = nguoi_dung_hien_tai();
+    $maNguoiDung = (int) ($nguoiDung['id'] ?? 0);
+
+    if ($maNguoiDung <= 0) {
+        return false;
+    }
+
+    $banGhi = lay_mot_dong(
+        'SELECT role, status FROM users WHERE id = :id LIMIT 1',
+        ['id' => $maNguoiDung]
+    );
+
+    return $banGhi !== null
+        && $banGhi['status'] === TRANG_THAI_HOAT_DONG
+        && $banGhi['role'] === ($nguoiDung['vai_tro'] ?? '');
+}
+
+function dang_nhap_bi_tam_khoa(string $taiKhoan): bool
+{
+    $khoa = khoa_thu_dang_nhap($taiKhoan);
+    $duLieu = $_SESSION['thu_dang_nhap'][$khoa] ?? null;
+
+    return is_array($duLieu)
+        && (int) ($duLieu['so_lan'] ?? 0) >= 5
+        && time() - (int) ($duLieu['luc_cuoi'] ?? 0) < 300;
+}
+
+function ghi_nhan_dang_nhap_that_bai(string $taiKhoan): void
+{
+    $khoa = khoa_thu_dang_nhap($taiKhoan);
+    $duLieu = $_SESSION['thu_dang_nhap'][$khoa] ?? ['so_lan' => 0, 'luc_cuoi' => 0];
+    $_SESSION['thu_dang_nhap'][$khoa] = [
+        'so_lan' => (int) ($duLieu['so_lan'] ?? 0) + 1,
+        'luc_cuoi' => time(),
+    ];
+}
+
+function xoa_thu_dang_nhap(string $taiKhoan): void
+{
+    unset($_SESSION['thu_dang_nhap'][khoa_thu_dang_nhap($taiKhoan)]);
+}
+
+function khoa_thu_dang_nhap(string $taiKhoan): string
+{
+    return hash('sha256', mb_strtolower(trim($taiKhoan), 'UTF-8') . '|' . ($_SERVER['REMOTE_ADDR'] ?? 'local'));
 }
 
 function mat_khau_hop_le(string $matKhau, string $hash): bool

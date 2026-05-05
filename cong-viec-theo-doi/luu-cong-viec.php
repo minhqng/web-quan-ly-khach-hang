@@ -67,6 +67,10 @@ function cap_nhat_trang_thai_cong_viec(int $id, string $trangThai): ?array
         return null;
     }
 
+    if (!co_the_chuyen_trang_thai_cong_viec((string) $congViec['status'], $trangThai)) {
+        return null;
+    }
+
     thuc_thi_lenh(
         "UPDATE follow_up_tasks
          SET status = :status,

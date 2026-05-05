@@ -6,9 +6,12 @@ require __DIR__ . '/../dung-chung/khoi-dong.php';
 require __DIR__ . '/../dung-chung/kiem-tra-dang-nhap.php';
 require_once __DIR__ . '/du-lieu-bao-cao.php';
 
-$theoThoiGian = lay_tuong_tac_theo_thoi_gian_bao_cao();
-$theoLoai = lay_tuong_tac_theo_loai_bao_cao();
-$theoNhanVien = lay_tuong_tac_theo_nhan_vien_bao_cao();
+$boLocBaoCao = lay_bo_loc_bao_cao();
+$danhSachNhanVienBaoCao = lay_lua_chon_nhan_vien_bao_cao();
+$danhSachLoaiBaoCao = lay_lua_chon_loai_khach_hang_bao_cao();
+$theoThoiGian = lay_tuong_tac_theo_thoi_gian_bao_cao($boLocBaoCao);
+$theoLoai = lay_tuong_tac_theo_loai_bao_cao($boLocBaoCao);
+$theoNhanVien = lay_tuong_tac_theo_nhan_vien_bao_cao($boLocBaoCao);
 $nhanTuongTac = nhan_tuong_tac_bao_cao();
 $tong30Ngay = tong_cot_bao_cao($theoThoiGian);
 $tongTatCa = tong_cot_bao_cao($theoLoai);
@@ -27,6 +30,7 @@ require __DIR__ . '/../giao-dien/dau-trang.php';
 </div>
 
 <?php require __DIR__ . '/thanh-dieu-huong-bao-cao.php'; ?>
+<?php require __DIR__ . '/bo-loc-bao-cao.php'; ?>
 
 <section class="report-stat-grid">
     <article class="stat-card">

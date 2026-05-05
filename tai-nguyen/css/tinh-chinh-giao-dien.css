@@ -42,6 +42,7 @@
 .sidebar-link,
 .report-nav-link,
 .follow-up-tab,
+.segmented-nav-link,
 .form-control,
 .form-select,
 .badge {
@@ -128,6 +129,8 @@
 .empty-state-inline {
     display: grid;
     gap: var(--space-1);
+    max-width: 520px;
+    text-align: center;
 }
 
 .empty-state-inline p {
@@ -153,6 +156,10 @@
 .customer-form-actions,
 .interaction-form-actions,
 .follow-up-form-actions {
+    background: linear-gradient(180deg, transparent, rgba(248, 250, 252, 0.72));
+}
+
+.form-actions {
     background: linear-gradient(180deg, transparent, rgba(248, 250, 252, 0.72));
 }
 

@@ -36,7 +36,7 @@ if (la_post()) {
     yeu_cau_csrf('cong-viec-theo-doi/sua.php?id=' . $id);
 
     $duLieu = lay_du_lieu_form_cong_viec($_POST);
-    $loi = kiem_tra_du_lieu_cong_viec($duLieu);
+    $loi = kiem_tra_du_lieu_cong_viec($duLieu, $congViec);
 
     if ($loi === []) {
         cap_nhat_cong_viec_theo_doi($id, $duLieu);

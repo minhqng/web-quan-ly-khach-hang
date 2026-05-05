@@ -43,6 +43,9 @@ if (la_post()) {
     yeu_cau_csrf('khach-hang/sua.php?id=' . $id);
 
     $duLieu = lay_du_lieu_form_khach_hang($_POST);
+    if (!la_admin()) {
+        $duLieu['assigned_user_id'] = (string) $khachHang['assigned_user_id'];
+    }
     $loi = kiem_tra_du_lieu_khach_hang($duLieu, $id);
 
     if ($loi === []) {

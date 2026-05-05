@@ -90,7 +90,7 @@ $nhanUuTien = ['high' => 'Cao', 'medium' => 'Vừa', 'low' => 'Thấp'];
         </div>
     <?php endif; ?>
 
-    <div class="interaction-form-actions">
+    <div class="interaction-form-actions form-actions">
         <a class="btn btn-outline-secondary" href="<?= e(duong_dan('tuong-tac/')) ?>">Hủy</a>
         <button class="btn btn-primary" type="submit"><?= e($nhanNut) ?></button>
     </div>

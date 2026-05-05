@@ -91,7 +91,7 @@ $coLoi = static fn (string $truong): string => isset($loi[$truong]) ? ' is-inval
         </div>
     </div>
 
-    <div class="type-form-actions">
+    <div class="type-form-actions form-actions">
         <a class="btn btn-outline-secondary" href="<?= e(duong_dan($duongDanHuy)) ?>">Hủy</a>
         <button class="btn btn-primary" type="submit"><?= e($nhanNut) ?></button>
     </div>

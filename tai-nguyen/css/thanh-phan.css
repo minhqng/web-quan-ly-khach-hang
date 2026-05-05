@@ -64,6 +64,31 @@
     line-height: 1.1;
 }
 
+.segmented-nav {
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    display: inline-flex;
+    gap: var(--space-1);
+    padding: var(--space-1);
+}
+
+.segmented-nav-link {
+    border-radius: var(--radius-sm);
+    color: var(--color-muted);
+    font-weight: 700;
+    min-height: 36px;
+    padding: var(--space-2) var(--space-3);
+    text-decoration: none;
+}
+
+.segmented-nav-link:hover,
+.segmented-nav-link.is-active {
+    background: var(--color-primary-soft);
+    color: var(--color-primary-dark);
+}
+
 .btn {
     border-radius: var(--radius-sm);
     font-weight: 600;
@@ -102,6 +127,57 @@
 .form-select:focus {
     border-color: var(--color-primary);
     box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.14);
+}
+
+.form-section {
+    border-top: 1px solid var(--color-line);
+    padding-top: var(--space-5);
+}
+
+.form-section + .form-section {
+    margin-top: var(--space-5);
+}
+
+.form-section-title {
+    margin-bottom: var(--space-4);
+}
+
+.form-section-title h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.form-section-title p {
+    color: var(--color-muted);
+    margin: var(--space-1) 0 0;
+}
+
+.form-actions,
+.row-actions,
+.table-panel-heading {
+    align-items: center;
+    display: flex;
+    gap: var(--space-2);
+}
+
+.form-actions {
+    border-top: 1px solid var(--color-line);
+    justify-content: flex-end;
+    margin-top: var(--space-5);
+    padding-top: var(--space-4);
+}
+
+.row-actions {
+    flex-wrap: wrap;
+}
+
+.row-actions form {
+    margin: 0;
+}
+
+.table-panel-heading {
+    justify-content: space-between;
 }
 
 .table {

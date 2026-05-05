@@ -16,6 +16,8 @@ function tao_dieu_kien_loc_khach_hang(array $boLoc): array
 {
     $dieuKien = [];
     $thamSo = [];
+    $nguoiDung = nguoi_dung_hien_tai();
+    $laAdmin = ($nguoiDung['vai_tro'] ?? '') === VAI_TRO_ADMIN;
 
     if ($boLoc['tu_khoa'] !== '') {
         $tuKhoa = '%' . $boLoc['tu_khoa'] . '%';
@@ -40,12 +42,15 @@ function tao_dieu_kien_loc_khach_hang(array $boLoc): array
         $thamSo['customer_type_id'] = $boLoc['customer_type_id'];
     }
 
-    if ($boLoc['assigned_user_id'] > 0) {
+    if ($laAdmin && $boLoc['assigned_user_id'] > 0) {
         $dieuKien[] = 'c.assigned_user_id = :assigned_user_id';
         $thamSo['assigned_user_id'] = $boLoc['assigned_user_id'];
+    } elseif (!$laAdmin) {
+        $dieuKien[] = 'c.assigned_user_id = :scope_assigned_user_id';
+        $thamSo['scope_assigned_user_id'] = (int) ($nguoiDung['id'] ?? 0);
     }
 
-    if ($boLoc['status'] === 'da_xoa') {
+    if ($laAdmin && $boLoc['status'] === 'da_xoa') {
         $dieuKien[] = 'c.deleted_at IS NOT NULL';
     } else {
         $dieuKien[] = 'c.deleted_at IS NULL';
@@ -98,6 +103,9 @@ function lay_danh_sach_khach_hang(array $boLoc, array $phanTrang): array
 
 function lay_chi_tiet_khach_hang(int $id): ?array
 {
+    [$phamViSql, $thamSoPhamVi] = dieu_kien_pham_vi_khach_hang('c', 'detail_scope');
+    $xoaSql = la_admin() ? '' : ' AND c.deleted_at IS NULL';
+
     return lay_mot_dong(
         "SELECT c.*, ct.name AS customer_type_name, ct.color AS customer_type_color,
             u.full_name AS assigned_user_name, u.email AS assigned_user_email,
@@ -116,14 +124,18 @@ function lay_chi_tiet_khach_hang(int $id): ?array
                 MIN(CASE WHEN status IN ('pending', 'in_progress') THEN due_at ELSE NULL END) AS next_task_due_at
             FROM follow_up_tasks GROUP BY customer_id
          ) t ON t.customer_id = c.id
-         WHERE c.id = :id
+         WHERE c.id = :id{$xoaSql}{$phamViSql}
          LIMIT 1",
-        ['id' => $id]
+        ['id' => $id] + $thamSoPhamVi
     );
 }
 
 function lay_tuong_tac_cua_khach_hang(int $id): array
 {
+    if (!khach_hang_thuoc_pham_vi_hien_tai($id, true)) {
+        return [];
+    }
+
     return lay_nhieu_dong(
         "SELECT i.title, i.interaction_type, i.interaction_at, u.full_name AS user_name
          FROM interactions i
@@ -137,6 +149,10 @@ function lay_tuong_tac_cua_khach_hang(int $id): array
 
 function lay_cong_viec_cua_khach_hang(int $id): array
 {
+    if (!khach_hang_thuoc_pham_vi_hien_tai($id, true)) {
+        return [];
+    }
+
     return lay_nhieu_dong(
         "SELECT t.title, t.status, t.priority, t.due_at, t.completed_at, u.full_name AS assigned_user_name
          FROM follow_up_tasks t
@@ -146,4 +162,29 @@ function lay_cong_viec_cua_khach_hang(int $id): array
          LIMIT 8",
         ['id' => $id]
     );
+}
+
+function dieu_kien_pham_vi_khach_hang(string $biDanh = 'c', string $tenThamSo = 'scope_user_id'): array
+{
+    $nguoiDung = nguoi_dung_hien_tai();
+
+    if (($nguoiDung['vai_tro'] ?? '') === VAI_TRO_ADMIN) {
+        return ['', []];
+    }
+
+    return [
+        " AND {$biDanh}.assigned_user_id = :{$tenThamSo}",
+        [$tenThamSo => (int) ($nguoiDung['id'] ?? 0)],
+    ];
+}
+
+function khach_hang_thuoc_pham_vi_hien_tai(int $id, bool $choPhepDaXoa = false): bool
+{
+    [$phamViSql, $thamSoPhamVi] = dieu_kien_pham_vi_khach_hang('c', 'scope_customer_user_id');
+    $dieuKienXoa = $choPhepDaXoa ? '' : ' AND c.deleted_at IS NULL';
+
+    return (int) lay_mot_gia_tri(
+        "SELECT COUNT(*) FROM customers c WHERE c.id = :id{$dieuKienXoa}{$phamViSql}",
+        ['id' => $id] + $thamSoPhamVi
+    ) > 0;
 }

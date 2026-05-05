@@ -86,13 +86,26 @@ function lay_top_khach_hang_bang_dieu_khien(?int $maNhanVien): array
             i.last_interaction_at,
             COALESCE(t.completed_task_count, 0) AS completed_task_count,
             COALESCE(t.overdue_task_count, 0) AS overdue_task_count,
+            COALESCE(t.overdue_days, 0) AS overdue_days,
             t.next_task_due_at,
             (
                 COALESCE(ct.priority_score, 0)
-                + COALESCE(i.interaction_count, 0) * 6
-                + COALESCE(t.completed_task_count, 0) * 8
-                - COALESCE(t.overdue_task_count, 0) * 5
+                + COALESCE(i.interaction_count, 0) * 4
+                + COALESCE(t.completed_task_count, 0) * 4
+                - COALESCE(t.overdue_task_count, 0) * 8
+                - COALESCE(t.overdue_days, 0) * 2
                 + CASE c.status WHEN 'active' THEN 12 WHEN 'potential' THEN 8 ELSE 0 END
+                + CASE
+                    WHEN i.last_interaction_at IS NULL THEN -18
+                    WHEN i.last_interaction_at < DATE_SUB(NOW(), INTERVAL 30 DAY) THEN -12
+                    WHEN i.last_interaction_at >= DATE_SUB(NOW(), INTERVAL 7 DAY) THEN 6
+                    ELSE 0
+                  END
+                + CASE
+                    WHEN t.next_task_due_at BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 3 DAY) THEN 14
+                    WHEN t.next_task_due_at BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 7 DAY) THEN 7
+                    ELSE 0
+                  END
             ) AS care_score
          FROM customers c
          INNER JOIN customer_types ct ON ct.id = c.customer_type_id
@@ -107,6 +120,7 @@ function lay_top_khach_hang_bang_dieu_khien(?int $maNhanVien): array
                 customer_id,
                 SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) AS completed_task_count,
                 SUM(CASE WHEN status IN ('pending', 'in_progress') AND due_at < NOW() THEN 1 ELSE 0 END) AS overdue_task_count,
+                MAX(CASE WHEN status IN ('pending', 'in_progress') AND due_at < NOW() THEN TIMESTAMPDIFF(DAY, due_at, NOW()) ELSE 0 END) AS overdue_days,
                 MIN(CASE WHEN status IN ('pending', 'in_progress') AND due_at >= NOW() THEN due_at ELSE NULL END) AS next_task_due_at
             FROM follow_up_tasks
             GROUP BY customer_id

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 function lay_lua_chon_khach_hang_cong_viec(?int $idHienTai = null): array
 {
-    $sql = 'SELECT id, full_name, company_name FROM customers WHERE deleted_at IS NULL';
-    $thamSo = [];
+    [$phamViSql, $thamSo] = dieu_kien_pham_vi_khach_hang_cong_viec('customers', 'scope_task_customer_options');
+    $sql = "SELECT id, full_name, company_name FROM customers WHERE deleted_at IS NULL{$phamViSql}";
 
-    if ($idHienTai !== null) {
+    if ($idHienTai !== null && la_admin()) {
         $sql .= ' OR id = :id';
         $thamSo['id'] = $idHienTai;
     }
@@ -17,6 +17,17 @@ function lay_lua_chon_khach_hang_cong_viec(?int $idHienTai = null): array
 
 function lay_lua_chon_nhan_vien_cong_viec(): array
 {
+    $nguoiDung = nguoi_dung_hien_tai();
+
+    if (($nguoiDung['vai_tro'] ?? '') !== VAI_TRO_ADMIN) {
+        return lay_nhieu_dong(
+            "SELECT id, full_name
+             FROM users
+             WHERE id = :id AND role = 'staff' AND status = 'active'",
+            ['id' => (int) ($nguoiDung['id'] ?? 0)]
+        );
+    }
+
     return lay_nhieu_dong(
         "SELECT id, full_name
          FROM users
@@ -27,14 +38,22 @@ function lay_lua_chon_nhan_vien_cong_viec(): array
 
 function khach_hang_cong_viec_ton_tai(int $id): bool
 {
+    [$phamViSql, $thamSoPhamVi] = dieu_kien_pham_vi_khach_hang_cong_viec('customers', 'scope_task_customer_exists');
+
     return (int) lay_mot_gia_tri(
-        'SELECT COUNT(*) FROM customers WHERE id = :id AND deleted_at IS NULL',
-        ['id' => $id]
+        "SELECT COUNT(*) FROM customers WHERE id = :id AND deleted_at IS NULL{$phamViSql}",
+        ['id' => $id] + $thamSoPhamVi
     ) > 0;
 }
 
 function nhan_vien_cong_viec_ton_tai(int $id): bool
 {
+    $nguoiDung = nguoi_dung_hien_tai();
+
+    if (($nguoiDung['vai_tro'] ?? '') !== VAI_TRO_ADMIN && $id !== (int) ($nguoiDung['id'] ?? 0)) {
+        return false;
+    }
+
     return (int) lay_mot_gia_tri(
         "SELECT COUNT(*) FROM users WHERE id = :id AND role = 'staff' AND status = 'active'",
         ['id' => $id]
@@ -47,6 +66,20 @@ function lay_cong_viec_theo_id(int $id): ?array
         'SELECT * FROM follow_up_tasks WHERE id = :id LIMIT 1',
         ['id' => $id]
     );
+}
+
+function dieu_kien_pham_vi_khach_hang_cong_viec(string $biDanh, string $tenThamSo): array
+{
+    $nguoiDung = nguoi_dung_hien_tai();
+
+    if (($nguoiDung['vai_tro'] ?? '') === VAI_TRO_ADMIN) {
+        return ['', []];
+    }
+
+    return [
+        " AND {$biDanh}.assigned_user_id = :{$tenThamSo}",
+        [$tenThamSo => (int) ($nguoiDung['id'] ?? 0)],
+    ];
 }
 
 function co_quyen_cap_nhat_cong_viec(array $congViec): bool

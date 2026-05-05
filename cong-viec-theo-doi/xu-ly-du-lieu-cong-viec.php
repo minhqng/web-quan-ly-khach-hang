@@ -2,57 +2,6 @@
 
 declare(strict_types=1);
 
-function nhan_trang_thai_cong_viec(): array
-{
-    return [
-        'pending' => 'Chờ xử lý',
-        'in_progress' => 'Đang xử lý',
-        'completed' => 'Hoàn thành',
-        'cancelled' => 'Đã hủy',
-    ];
-}
-
-function nhan_trang_thai_chinh_cong_viec(): array
-{
-    return ['pending' => 'Chờ xử lý', 'completed' => 'Hoàn thành', 'cancelled' => 'Đã hủy'];
-}
-
-function chuan_hoa_trang_thai_cong_viec(string $trangThai): string
-{
-    return $trangThai === 'done' ? 'completed' : $trangThai;
-}
-
-function trang_thai_cong_viec_dang_mo(): array
-{
-    return ['pending', 'in_progress'];
-}
-
-function lop_badge_trang_thai_cong_viec(string $trangThai): string
-{
-    return match ($trangThai) {
-        'pending' => 'badge-soft-warning',
-        'in_progress' => 'badge-soft-primary',
-        'completed' => 'badge-soft-success',
-        'cancelled' => 'badge-soft-danger',
-        default => 'badge-soft-primary',
-    };
-}
-
-function nhan_uu_tien_cong_viec(): array
-{
-    return ['high' => 'Cao', 'medium' => 'Vừa', 'low' => 'Thấp'];
-}
-
-function lop_badge_uu_tien_cong_viec(string $uuTien): string
-{
-    return match ($uuTien) {
-        'high' => 'badge-soft-danger',
-        'medium' => 'badge-soft-warning',
-        'low' => 'badge-soft-success',
-        default => 'badge-soft-primary',
-    };
-}
-
 function la_cong_viec_qua_han(array $congViec): bool
 {
     return in_array($congViec['status'], trang_thai_cong_viec_dang_mo(), true)
@@ -61,9 +10,11 @@ function la_cong_viec_qua_han(array $congViec): bool
 
 function du_lieu_mac_dinh_cong_viec(?int $maKhachHang = null): array
 {
+    $nguoiDung = nguoi_dung_hien_tai();
+
     return [
         'customer_id' => (string) ($maKhachHang ?? ''),
-        'assigned_user_id' => '',
+        'assigned_user_id' => ($nguoiDung['vai_tro'] ?? '') === VAI_TRO_NHAN_VIEN ? (string) ($nguoiDung['id'] ?? '') : '',
         'title' => '',
         'description' => '',
         'due_at' => date('Y-m-d\TH:i', strtotime('+1 day')),
@@ -85,7 +36,7 @@ function lay_du_lieu_form_cong_viec(array $nguon): array
     ];
 }
 
-function kiem_tra_du_lieu_cong_viec(array $duLieu): array
+function kiem_tra_du_lieu_cong_viec(array $duLieu, ?array $congViecHienTai = null): array
 {
     $loi = [];
 
@@ -109,6 +60,8 @@ function kiem_tra_du_lieu_cong_viec(array $duLieu): array
 
     if (!array_key_exists($duLieu['status'], nhan_trang_thai_cong_viec())) {
         $loi['status'] = 'Trạng thái công việc không hợp lệ.';
+    } elseif ($congViecHienTai !== null && !co_the_chuyen_trang_thai_cong_viec((string) $congViecHienTai['status'], $duLieu['status'])) {
+        $loi['status'] = 'Không thể chuyển trạng thái công việc theo chiều này.';
     }
 
     if (!array_key_exists($duLieu['priority'], nhan_uu_tien_cong_viec())) {
@@ -116,6 +69,36 @@ function kiem_tra_du_lieu_cong_viec(array $duLieu): array
     }
 
     return $loi;
+}
+
+function co_the_chuyen_trang_thai_cong_viec(string $hienTai, string $moi): bool
+{
+    $hienTai = chuan_hoa_trang_thai_cong_viec($hienTai);
+    $moi = chuan_hoa_trang_thai_cong_viec($moi);
+
+    if ($hienTai === $moi) {
+        return true;
+    }
+
+    $luong = [
+        'pending' => ['in_progress', 'completed', 'cancelled'],
+        'in_progress' => ['pending', 'completed', 'cancelled'],
+        'completed' => [],
+        'cancelled' => [],
+    ];
+
+    return in_array($moi, $luong[$hienTai] ?? [], true);
+}
+
+function lua_chon_trang_thai_cong_viec(string $hienTai): array
+{
+    $nhan = nhan_trang_thai_cong_viec();
+
+    return array_filter(
+        $nhan,
+        static fn (string $trangThai): bool => co_the_chuyen_trang_thai_cong_viec($hienTai, $trangThai),
+        ARRAY_FILTER_USE_KEY
+    );
 }
 
 function datetime_mysql_cong_viec(string $giaTri): string

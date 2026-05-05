@@ -2,51 +2,6 @@
 
 declare(strict_types=1);
 
-function nhan_trang_thai_khach_hang(): array
-{
-    return ['active' => 'Đang chăm sóc', 'potential' => 'Tiềm năng', 'inactive' => 'Tạm ngưng'];
-}
-
-function nhan_gioi_tinh_khach_hang(): array
-{
-    return ['unknown' => 'Chưa xác định', 'male' => 'Nam', 'female' => 'Nữ', 'other' => 'Khác'];
-}
-
-function nhan_nguon_khach_hang(): array
-{
-    return [
-        'website' => 'Website',
-        'facebook' => 'Facebook',
-        'referral' => 'Giới thiệu',
-        'walk_in' => 'Đến trực tiếp',
-        'phone' => 'Điện thoại',
-        'other' => 'Khác',
-    ];
-}
-
-function lop_badge_trang_thai_khach_hang(string $trangThai, ?string $deletedAt = null): string
-{
-    if ($deletedAt) {
-        return 'badge-soft-danger';
-    }
-
-    return match ($trangThai) {
-        'active' => 'badge-soft-success',
-        'potential' => 'badge-soft-primary',
-        'inactive' => 'badge-soft-warning',
-        default => 'badge-soft-primary',
-    };
-}
-
-function nhan_hien_thi_trang_thai_khach_hang(string $trangThai, ?string $deletedAt = null): string
-{
-    if ($deletedAt) {
-        return 'Đã xóa mềm';
-    }
-
-    return nhan_trang_thai_khach_hang()[$trangThai] ?? 'Không rõ';
-}
-
 function du_lieu_mac_dinh_khach_hang(): array
 {
     $nguoiDung = nguoi_dung_hien_tai();

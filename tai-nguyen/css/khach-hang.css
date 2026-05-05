@@ -5,15 +5,55 @@
 .customer-list-summary {
     align-items: baseline;
     border-bottom: 1px solid var(--color-line);
-    display: flex;
     gap: var(--space-2);
     padding: var(--space-3) var(--space-4);
+}
+
+.customer-table-col-main {
+    width: 30%;
+}
+
+.customer-table-col-contact {
+    width: 20%;
+}
+
+.customer-table-col-type,
+.customer-table-col-staff,
+.customer-table-col-status {
+    width: 14%;
+}
+
+.customer-table-col-actions {
+    width: 14%;
 }
 
 .customer-name-cell,
 .customer-contact-cell {
     display: grid;
     gap: 2px;
+}
+
+.customer-main-link {
+    color: var(--color-ink);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.customer-main-link:hover {
+    color: var(--color-primary);
+}
+
+.customer-due-badge {
+    background: var(--color-surface-soft);
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    color: var(--color-muted);
+    display: inline-flex;
+    font-size: 0.78rem;
+    font-weight: 700;
+    justify-self: start;
+    margin-top: var(--space-1);
+    padding: 3px 9px;
 }
 
 .customer-name-cell span,
@@ -62,14 +102,16 @@
     max-width: 1080px;
 }
 
+.user-form {
+    max-width: 980px;
+}
+
 .customer-form-heading {
     margin-bottom: var(--space-4);
 }
 
 .customer-form-actions {
-    border-top: 1px solid var(--color-line);
     margin-top: var(--space-5);
-    padding-top: var(--space-4);
 }
 
 .duplicate-feedback {

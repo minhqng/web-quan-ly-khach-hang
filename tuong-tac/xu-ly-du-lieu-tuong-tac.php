@@ -2,39 +2,6 @@
 
 declare(strict_types=1);
 
-function nhan_loai_tuong_tac(): array
-{
-    return [
-        'call' => 'Gọi điện',
-        'email' => 'Email',
-        'meeting' => 'Gặp mặt',
-        'chat' => 'Chat/Zalo',
-        'note' => 'Ghi chú',
-        'other' => 'Khác',
-    ];
-}
-
-function lop_badge_loai_tuong_tac(string $loai): string
-{
-    return match ($loai) {
-        'call' => 'badge-soft-success',
-        'email' => 'badge-soft-primary',
-        'meeting' => 'badge-soft-warning',
-        'chat', 'zalo' => 'badge-soft-primary',
-        'note' => 'badge-soft-success',
-        default => 'badge-soft-primary',
-    };
-}
-
-function nhan_loai_tuong_tac_hien_thi(string $loai): string
-{
-    if ($loai === 'zalo') {
-        return 'Zalo';
-    }
-
-    return nhan_loai_tuong_tac()[$loai] ?? 'Khác';
-}
-
 function du_lieu_mac_dinh_tuong_tac(?int $maKhachHang = null): array
 {
     return [

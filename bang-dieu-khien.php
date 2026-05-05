@@ -13,27 +13,9 @@ $congViecSapToi = $duLieuBangDieuKhien['cong_viec_sap_toi'];
 $congViecQuaHan = $duLieuBangDieuKhien['cong_viec_qua_han'];
 $hoatDongGanDay = $duLieuBangDieuKhien['hoat_dong_gan_day'];
 
-$nhanTrangThaiKhach = [
-    'active' => 'Đang chăm sóc',
-    'potential' => 'Tiềm năng',
-    'inactive' => 'Tạm ngưng',
-];
-$nhanTrangThaiViec = [
-    'pending' => 'Chờ xử lý',
-    'in_progress' => 'Đang xử lý',
-    'completed' => 'Hoàn thành',
-    'cancelled' => 'Đã hủy',
-];
-$nhanUuTien = ['high' => 'Cao', 'medium' => 'Vừa', 'low' => 'Thấp'];
-$lopUuTien = ['high' => 'badge-soft-danger', 'medium' => 'badge-soft-warning', 'low' => 'badge-soft-success'];
-$nhanTuongTac = [
-    'call' => 'Cuộc gọi',
-    'email' => 'Email',
-    'meeting' => 'Gặp mặt',
-    'note' => 'Ghi chú',
-    'zalo' => 'Zalo',
-    'other' => 'Khác',
-];
+$nhanTrangThaiKhach = nhan_trang_thai_khach_hang();
+$nhanTrangThaiViec = nhan_trang_thai_cong_viec();
+$nhanUuTien = nhan_uu_tien_cong_viec();
 
 function mau_loai_khach_hang_dashboard_an_toan(?string $mau): string
 {
@@ -49,7 +31,7 @@ require __DIR__ . '/giao-dien/dau-trang.php';
     <div class="page-header dashboard-header">
         <div>
             <p class="eyebrow">Tổng quan CRM</p>
-            <h1 class="page-title">Bảng điều khiển chăm sóc khách hàng</h1>
+            <h1 class="page-title">Việc cần xử lý hôm nay</h1>
             <p class="page-subtitle">Theo dõi khách hàng trọng tâm, việc cần xử lý và hoạt động mới nhất trong một màn hình demo gọn gàng.</p>
         </div>
         <div class="dashboard-scope">
@@ -124,34 +106,10 @@ require __DIR__ . '/giao-dien/dau-trang.php';
             <?php endif; ?>
         </section>
 
-        <section class="dashboard-panel dashboard-upcoming" aria-labelledby="viec-sap-toi-title">
-            <div class="dashboard-panel-header">
-                <h2 id="viec-sap-toi-title">Việc sắp tới</h2>
-                <a href="<?= e(duong_dan('cong-viec-theo-doi/')) ?>">Xem tất cả</a>
-            </div>
-            <div class="dashboard-list">
-                <?php foreach ($congViecSapToi as $congViec): ?>
-                    <article class="dashboard-list-row">
-                        <div>
-                            <h3><?= e($congViec['title']) ?></h3>
-                            <p><?= e($congViec['customer_name']) ?> · <?= e($congViec['assigned_user_name']) ?></p>
-                        </div>
-                        <div class="dashboard-list-meta">
-                            <span class="badge <?= e($lopUuTien[$congViec['priority']] ?? 'badge-soft-primary') ?>"><?= e($nhanUuTien[$congViec['priority']] ?? 'Vừa') ?></span>
-                            <time><?= e(dinh_dang_ngay_gio($congViec['due_at'])) ?></time>
-                        </div>
-                    </article>
-                <?php endforeach; ?>
-                <?php if ($congViecSapToi === []): ?>
-                    <p class="dashboard-empty-note">Chưa có việc sắp tới.</p>
-                <?php endif; ?>
-            </div>
-        </section>
-
         <section class="dashboard-panel dashboard-overdue" aria-labelledby="viec-qua-han-title">
             <div class="dashboard-panel-header">
-                <h2 id="viec-qua-han-title">Việc quá hạn</h2>
-                <a href="<?= e(duong_dan('cong-viec-theo-doi/')) ?>">Xử lý</a>
+                <h2 id="viec-qua-han-title">Việc quá hạn <span class="badge badge-soft-danger"><?= e((string) count($congViecQuaHan)) ?></span></h2>
+                <a href="<?= e(duong_dan('cong-viec-theo-doi/qua-han.php')) ?>">Xử lý</a>
             </div>
             <div class="dashboard-list">
                 <?php foreach ($congViecQuaHan as $congViec): ?>
@@ -161,13 +119,45 @@ require __DIR__ . '/giao-dien/dau-trang.php';
                             <p><?= e($congViec['customer_name']) ?> · <?= e($nhanTrangThaiViec[$congViec['status']] ?? 'Chờ xử lý') ?></p>
                         </div>
                         <div class="dashboard-list-meta">
-                            <span class="badge <?= e($lopUuTien[$congViec['priority']] ?? 'badge-soft-warning') ?>"><?= e($nhanUuTien[$congViec['priority']] ?? 'Vừa') ?></span>
+                            <span class="badge <?= e(lop_badge_uu_tien_cong_viec($congViec['priority'])) ?>"><?= e($nhanUuTien[$congViec['priority']] ?? 'Vừa') ?></span>
                             <time><?= e(dinh_dang_ngay_gio($congViec['due_at'])) ?></time>
                         </div>
                     </article>
                 <?php endforeach; ?>
                 <?php if ($congViecQuaHan === []): ?>
-                    <p class="dashboard-empty-note">Không có việc quá hạn.</p>
+                    <div class="empty-state-inline">
+                        <strong>Không có việc quá hạn</strong>
+                        <p>Danh sách chăm sóc đang đúng tiến độ.</p>
+                        <a class="btn btn-sm btn-outline-primary" href="<?= e(duong_dan('cong-viec-theo-doi/')) ?>">Xem công việc</a>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </section>
+
+        <section class="dashboard-panel dashboard-upcoming" aria-labelledby="viec-sap-toi-title">
+            <div class="dashboard-panel-header">
+                <h2 id="viec-sap-toi-title">Việc sắp tới <span class="badge badge-soft-primary"><?= e((string) count($congViecSapToi)) ?></span></h2>
+                <a href="<?= e(duong_dan('cong-viec-theo-doi/sap-toi.php')) ?>">Xem tất cả</a>
+            </div>
+            <div class="dashboard-list">
+                <?php foreach ($congViecSapToi as $congViec): ?>
+                    <article class="dashboard-list-row">
+                        <div>
+                            <h3><?= e($congViec['title']) ?></h3>
+                            <p><?= e($congViec['customer_name']) ?> · <?= e($congViec['assigned_user_name']) ?></p>
+                        </div>
+                        <div class="dashboard-list-meta">
+                            <span class="badge <?= e(lop_badge_uu_tien_cong_viec($congViec['priority'])) ?>"><?= e($nhanUuTien[$congViec['priority']] ?? 'Vừa') ?></span>
+                            <time><?= e(dinh_dang_ngay_gio($congViec['due_at'])) ?></time>
+                        </div>
+                    </article>
+                <?php endforeach; ?>
+                <?php if ($congViecSapToi === []): ?>
+                    <div class="empty-state-inline">
+                        <strong>Chưa có việc sắp tới</strong>
+                        <p>Tạo công việc theo dõi để có lịch chăm sóc rõ ràng.</p>
+                        <a class="btn btn-sm btn-outline-primary" href="<?= e(duong_dan('cong-viec-theo-doi/them.php')) ?>">Tạo công việc</a>
+                    </div>
                 <?php endif; ?>
             </div>
         </section>
@@ -183,13 +173,17 @@ require __DIR__ . '/giao-dien/dau-trang.php';
                         <span class="timeline-dot" aria-hidden="true"></span>
                         <div>
                             <h3><?= e($hoatDong['title']) ?></h3>
-                            <p><?= e($nhanTuongTac[$hoatDong['interaction_type']] ?? 'Tương tác') ?> với <?= e($hoatDong['customer_name']) ?></p>
+                            <p><?= e(nhan_loai_tuong_tac_hien_thi($hoatDong['interaction_type'])) ?> với <?= e($hoatDong['customer_name']) ?></p>
                             <time><?= e(dinh_dang_ngay_gio($hoatDong['interaction_at'])) ?> · <?= e($hoatDong['user_name']) ?></time>
                         </div>
                     </article>
                 <?php endforeach; ?>
                 <?php if ($hoatDongGanDay === []): ?>
-                    <p class="dashboard-empty-note">Chưa có hoạt động gần đây.</p>
+                    <div class="empty-state-inline">
+                        <strong>Chưa có hoạt động gần đây</strong>
+                        <p>Ghi nhận tương tác để timeline chăm sóc có dữ liệu.</p>
+                        <a class="btn btn-sm btn-outline-primary" href="<?= e(duong_dan('tuong-tac/them.php')) ?>">Thêm tương tác</a>
+                    </div>
                 <?php endif; ?>
             </div>
         </section>

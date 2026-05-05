@@ -49,6 +49,11 @@ function tao_tuong_tac(array $duLieu): int
 
 function cap_nhat_tuong_tac(int $id, array $duLieu): void
 {
+    $tuongTac = lay_tuong_tac_theo_id($id);
+    if (!$tuongTac || !co_the_sua_xoa_tuong_tac($tuongTac)) {
+        throw new RuntimeException('Không có quyền cập nhật tương tác này.');
+    }
+
     thuc_thi_lenh(
         'UPDATE interactions
          SET customer_id = :customer_id,

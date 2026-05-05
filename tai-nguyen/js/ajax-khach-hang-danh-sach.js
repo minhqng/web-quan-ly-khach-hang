@@ -52,11 +52,15 @@ function renderCustomerRows(body, customers) {
     body.replaceChildren();
     if (customers.length === 0) {
         const row = document.createElement('tr');
-        const cell = document.createElement('td');
-        cell.colSpan = 6;
-        cell.className = 'table-empty-state text-center text-muted py-5';
-        cell.textContent = 'Không tìm thấy khách hàng phù hợp. Hãy thử đổi từ khóa hoặc bộ lọc.';
-        row.append(cell);
+        const emptyCell = document.createElement('td');
+        emptyCell.colSpan = 6;
+        emptyCell.className = 'table-empty-state';
+        const empty = document.createElement('div');
+        empty.className = 'empty-state-inline mx-auto';
+        empty.append(textElement('strong', 'Không tìm thấy khách hàng phù hợp'));
+        empty.append(textElement('p', 'Thử đổi từ khóa, bộ lọc hoặc tạo hồ sơ mới nếu đây là khách hàng mới.'));
+        emptyCell.append(empty);
+        row.append(emptyCell);
         body.append(row);
         return;
     }

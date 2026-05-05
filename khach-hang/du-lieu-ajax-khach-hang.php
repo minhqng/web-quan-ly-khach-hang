@@ -18,7 +18,7 @@ function tao_du_lieu_ajax_khach_hang(array $khachHang): array
         'status_label' => nhan_hien_thi_trang_thai_khach_hang($khachHang['status'], $khachHang['deleted_at']),
         'status_badge_class' => lop_badge_trang_thai_khach_hang($khachHang['status'], $khachHang['deleted_at']),
         'interaction_count' => (int) $khachHang['interaction_count'],
-        'next_task_label' => dinh_dang_ngay_gio($khachHang['next_task_due_at']) ?: 'chưa có',
+        'next_task_label' => dinh_dang_ngay_gio($khachHang['next_task_due_at']) ?: 'Chưa có lịch',
         'is_deleted' => $daXoa,
         'can_manage_delete' => la_admin(),
         'detail_url' => duong_dan('khach-hang/chi-tiet.php?id=' . $khachHang['id']),
