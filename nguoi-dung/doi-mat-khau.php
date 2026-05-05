@@ -49,7 +49,7 @@ require __DIR__ . '/../giao-dien/dau-trang.php';
         <div class="form-section-title">
             <p class="eyebrow">Bảo mật tài khoản</p>
             <h2 class="card-title mb-1">Mật khẩu mới</h2>
-            <p class="text-muted mb-0">Mật khẩu cần tối thiểu 6 ký tự để phù hợp demo và dễ nhập lại.</p>
+            <p class="text-muted mb-0">Mật khẩu cần tối thiểu 8 ký tự để phù hợp yêu cầu bảo mật cơ bản.</p>
         </div>
         <div class="row g-3">
             <div class="col-md-6">

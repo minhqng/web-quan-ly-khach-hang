@@ -9,6 +9,36 @@ Dự án môn Lập trình Web: website quản lý khách hàng bằng PHP thu�
 3. Mở `http://localhost/quanly_khachhang/`.
 4. Khi có schema, import các file trong `co-so-du-lieu/` bằng phpMyAdmin hoặc MySQL CLI.
 
+## Cấu hình cơ sở dữ liệu
+
+Mặc định dự án dùng cấu hình XAMPP phổ biến: host `127.0.0.1`, port `3306`, database `quanly_khachhang`, user `root`, mật khẩu rỗng.
+
+Nếu máy chấm bài dùng thông tin khác, đặt biến môi trường trước khi chạy Apache/PHP:
+
+- `QLKH_DB_HOST`
+- `QLKH_DB_PORT`
+- `QLKH_DB_NAME`
+- `QLKH_DB_USERNAME`
+- `QLKH_DB_PASSWORD`
+
+Ví dụ trong PowerShell trước khi chạy kiểm thử CLI:
+
+```powershell
+$env:QLKH_DB_USERNAME = "root"
+$env:QLKH_DB_PASSWORD = ""
+```
+
+## Tài khoản demo
+
+Sau khi import `co-so-du-lieu/khoi-tao-co-so-du-lieu.sql`, dùng các tài khoản sau để demo phân quyền:
+
+- Admin: `admin` / `Demo@2026`
+- Nhân viên: `minhanh` / `Demo@2026`
+- Nhân viên: `quocbao` / `Demo@2026`
+- Nhân viên: `thutrang` / `Demo@2026`
+
+Trang đăng nhập không hiển thị trực tiếp mật khẩu demo để giao diện giống hệ thống thật hơn.
+
 ## Cấu trúc thư mục
 
 - `cau-hinh/`: Cấu hình ứng dụng, kết nối cơ sở dữ liệu, hằng số, phiên làm việc.

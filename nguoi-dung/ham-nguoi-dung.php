@@ -90,8 +90,8 @@ function kiem_tra_mat_khau_nguoi_dung(string $matKhau, string $xacNhan): array
 {
     $loi = [];
 
-    if (mb_strlen($matKhau) < 6) {
-        $loi['password'] = 'Mật khẩu cần ít nhất 6 ký tự.';
+    if (mb_strlen($matKhau) < 8) {
+        $loi['password'] = 'Mật khẩu cần ít nhất 8 ký tự.';
     }
 
     if ($matKhau !== $xacNhan) {

@@ -4,10 +4,12 @@ Import file `khoi-tao-co-so-du-lieu.sql` bằng phpMyAdmin để tạo lại dat
 
 ## Tài khoản demo
 
-- Admin: `admin` / `123456`
-- Nhân viên: `minhanh` / `123456`
-- Nhân viên: `quocbao` / `123456`
-- Nhân viên: `thutrang` / `123456`
+- Admin: `admin` / `Demo@2026`
+- Nhân viên: `minhanh` / `Demo@2026`
+- Nhân viên: `quocbao` / `Demo@2026`
+- Nhân viên: `thutrang` / `Demo@2026`
+
+Mật khẩu demo đủ 8 ký tự để phù hợp chính sách kiểm tra biểu mẫu. Khi triển khai ngoài máy demo, đổi mật khẩu ngay sau khi import.
 
 ## Dữ liệu demo
 

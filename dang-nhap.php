@@ -52,8 +52,7 @@ if (la_post()) {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= e($tieuDe) ?> - <?= e(TEN_UNG_DUNG) ?></title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="<?= e(duong_dan('tai-nguyen/vendor/bootstrap/bootstrap.min.css')) ?>" rel="stylesheet">
     <link href="<?= e(duong_dan('tai-nguyen/css/ung-dung.css')) ?>" rel="stylesheet">
 </head>
 <body class="login-body">
@@ -101,7 +100,7 @@ if (la_post()) {
                 >
             </div>
             <button class="btn btn-primary w-100" type="submit">Đăng nhập</button>
-            <p class="login-hint">Tài khoản demo: <strong>admin</strong>, <strong>minhanh</strong>, <strong>quocbao</strong>, <strong>thutrang</strong> / mật khẩu <strong>123456</strong>.</p>
+            <p class="login-hint">Thông tin tài khoản demo nằm trong tài liệu bàn giao dự án.</p>
         </form>
     </section>
 </main>

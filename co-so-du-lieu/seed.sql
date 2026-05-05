@@ -2,6 +2,7 @@
 -- co-so-du-lieu/khoi-tao-co-so-du-lieu.sql
 --
 -- Du lieu mau chat luong cao nam trong cung file bootstrap de sinh vien chi can import mot lan:
+-- Mat khau demo trong bootstrap: Demo@2026
 -- - Khach VIP, trung thanh, tiem nang, moi, tam ngung
 -- - Tuong tac thuc te bang tieng Viet
 -- - Cong viec pending, in_progress, completed, cancelled va qua han

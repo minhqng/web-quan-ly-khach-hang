@@ -239,7 +239,7 @@ EXECUTE alter_tasks_stmt;
 DEALLOCATE PREPARE alter_tasks_stmt;
 
 -- ============================================================
--- Demo seed data. Mat khau mac dinh cho moi tai khoan: 123456
+-- Demo seed data. Mat khau mac dinh cho moi tai khoan: Demo@2026
 -- Dataset duoc thiet ke de dashboard, bao cao va Top 3 co y nghia.
 -- Trang thai "done" trong yeu cau demo duoc luu bang gia tri completed.
 -- ============================================================
@@ -247,10 +247,10 @@ DEALLOCATE PREPARE alter_tasks_stmt;
 INSERT INTO `users`
     (`id`, `full_name`, `username`, `email`, `phone`, `password_hash`, `role`, `status`)
 VALUES
-    (1, 'Quản trị viên hệ thống', 'admin', 'admin@quanlykhachhang.demo.vn', '0900 000 001', '$2y$10$KJ7.uqFJcw3r24WLj6rEduHssNR3FcZe/S8UzLMfzzz5euNoPcl5W', 'admin', 'active'),
-    (2, 'Nguyễn Minh Anh', 'minhanh', 'minhanh@quanlykhachhang.demo.vn', '0901 111 222', '$2y$10$KJ7.uqFJcw3r24WLj6rEduHssNR3FcZe/S8UzLMfzzz5euNoPcl5W', 'staff', 'active'),
-    (3, 'Trần Quốc Bảo', 'quocbao', 'quocbao@quanlykhachhang.demo.vn', '0902 222 333', '$2y$10$KJ7.uqFJcw3r24WLj6rEduHssNR3FcZe/S8UzLMfzzz5euNoPcl5W', 'staff', 'active'),
-    (4, 'Lê Thu Trang', 'thutrang', 'thutrang@quanlykhachhang.demo.vn', '0903 333 444', '$2y$10$KJ7.uqFJcw3r24WLj6rEduHssNR3FcZe/S8UzLMfzzz5euNoPcl5W', 'staff', 'active');
+    (1, 'Quản trị viên hệ thống', 'admin', 'admin@quanlykhachhang.demo.vn', '0900 000 001', '$2y$10$PL6OE1mH/uygF004b/pUlOiizlIfD3LzCme7rT3KrwVRXb9MtBXMG', 'admin', 'active'),
+    (2, 'Nguyễn Minh Anh', 'minhanh', 'minhanh@quanlykhachhang.demo.vn', '0901 111 222', '$2y$10$PL6OE1mH/uygF004b/pUlOiizlIfD3LzCme7rT3KrwVRXb9MtBXMG', 'staff', 'active'),
+    (3, 'Trần Quốc Bảo', 'quocbao', 'quocbao@quanlykhachhang.demo.vn', '0902 222 333', '$2y$10$PL6OE1mH/uygF004b/pUlOiizlIfD3LzCme7rT3KrwVRXb9MtBXMG', 'staff', 'active'),
+    (4, 'Lê Thu Trang', 'thutrang', 'thutrang@quanlykhachhang.demo.vn', '0903 333 444', '$2y$10$PL6OE1mH/uygF004b/pUlOiizlIfD3LzCme7rT3KrwVRXb9MtBXMG', 'staff', 'active');
 
 INSERT INTO `customer_types`
     (`id`, `name`, `description`, `priority_score`, `color`, `is_active`)
