@@ -63,7 +63,7 @@ function nhan_vien_ton_tai(int $id): bool
     ) > 0;
 }
 
-function khach_hang_bi_trung(string $truong, string $giaTriChuan, ?int $boQuaId = null, bool $chiTrongPhamViHienTai = false): bool
+function khach_hang_bi_trung(string $truong, string $giaTriChuan, ?int $boQuaId = null): bool
 {
     if ($giaTriChuan === '' || !in_array($truong, ['phone', 'email'], true)) {
         return false;
@@ -72,11 +72,6 @@ function khach_hang_bi_trung(string $truong, string $giaTriChuan, ?int $boQuaId 
     $cot = $truong === 'phone' ? 'phone_normalized' : 'email_normalized';
     $sql = "SELECT COUNT(*) FROM customers WHERE deleted_at IS NULL AND {$cot} = :gia_tri";
     $thamSo = ['gia_tri' => $giaTriChuan];
-
-    if ($chiTrongPhamViHienTai && !la_admin()) {
-        $sql .= ' AND assigned_user_id = :duplicate_scope_user_id';
-        $thamSo['duplicate_scope_user_id'] = (int) (nguoi_dung_hien_tai()['id'] ?? 0);
-    }
 
     if ($boQuaId !== null) {
         $sql .= ' AND id <> :id';
@@ -156,18 +151,29 @@ function cap_nhat_khach_hang(int $id, array $duLieu): void
 
 function xoa_mem_khach_hang(int $id): string
 {
-    if ((int) lay_mot_gia_tri(
+    $soDong = thuc_thi_lenh(
+        "UPDATE customers c
+         SET c.deleted_at = NOW()
+         WHERE c.id = :id
+           AND c.deleted_at IS NULL
+           AND NOT EXISTS (
+                SELECT 1
+                FROM follow_up_tasks t
+                WHERE t.customer_id = c.id
+                  AND t.status IN ('pending', 'in_progress')
+           )",
+        ['id' => $id]
+    );
+
+    if ($soDong > 0) {
+        return 'da_xoa';
+    }
+
+    return (int) lay_mot_gia_tri(
         "SELECT COUNT(*) FROM follow_up_tasks
          WHERE customer_id = :id AND status IN ('pending', 'in_progress')",
         ['id' => $id]
-    ) > 0) {
-        return 'co_cong_viec_mo';
-    }
-
-    return thuc_thi_lenh(
-        'UPDATE customers SET deleted_at = NOW() WHERE id = :id AND deleted_at IS NULL',
-        ['id' => $id]
-    ) > 0 ? 'da_xoa' : 'khong_hop_le';
+    ) > 0 ? 'co_cong_viec_mo' : 'khong_hop_le';
 }
 
 function khoi_phuc_khach_hang(int $id): string

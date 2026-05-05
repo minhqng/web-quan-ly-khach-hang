@@ -26,8 +26,8 @@ if (la_post()) {
                     : 'Đã ghi nhận tương tác khách hàng.'
             );
             chuyen_huong('khach-hang/chi-tiet.php?id=' . $duLieu['customer_id']);
-        } catch (Throwable) {
-            thong_bao_loi('Không thể ghi nhận tương tác lúc này. Vui lòng kiểm tra nhân viên phụ trách và thử lại.');
+        } catch (LoiNghiepVu $exception) {
+            $loi['customer_id'] = $exception->getMessage();
         }
     }
 

@@ -66,7 +66,6 @@ function kiem_tra_du_lieu_khach_hang(array $duLieu, ?int $boQuaId = null): array
 {
     $loi = [];
     $dienThoaiChuan = chuan_hoa_dien_thoai_khach_hang($duLieu['phone']);
-    $chiKiemTraTrongPhamVi = !la_admin();
 
     if ($duLieu['full_name'] === '') {
         $loi['full_name'] = 'Vui lòng nhập họ tên khách hàng.';
@@ -88,14 +87,14 @@ function kiem_tra_du_lieu_khach_hang(array $duLieu, ?int $boQuaId = null): array
 
     if ($duLieu['phone'] !== '' && (mb_strlen($dienThoaiChuan) < 9 || mb_strlen($dienThoaiChuan) > 15)) {
         $loi['phone'] = 'Số điện thoại cần có từ 9 đến 15 chữ số.';
-    } elseif ($dienThoaiChuan !== '' && khach_hang_bi_trung('phone', $dienThoaiChuan, $boQuaId, $chiKiemTraTrongPhamVi)) {
-        $loi['phone'] = 'Số điện thoại đang được dùng bởi khách hàng khác.';
+    } elseif ($dienThoaiChuan !== '' && khach_hang_bi_trung('phone', $dienThoaiChuan, $boQuaId)) {
+        $loi['phone'] = 'Số điện thoại này không thể sử dụng. Vui lòng nhập số khác.';
     }
 
     if ($duLieu['email'] !== '' && !filter_var($duLieu['email'], FILTER_VALIDATE_EMAIL)) {
         $loi['email'] = 'Email không đúng định dạng.';
-    } elseif ($duLieu['email'] !== '' && khach_hang_bi_trung('email', $duLieu['email'], $boQuaId, $chiKiemTraTrongPhamVi)) {
-        $loi['email'] = 'Email đang được dùng bởi khách hàng khác.';
+    } elseif ($duLieu['email'] !== '' && khach_hang_bi_trung('email', $duLieu['email'], $boQuaId)) {
+        $loi['email'] = 'Email này không thể sử dụng. Vui lòng nhập email khác.';
     }
 
     return array_merge($loi, kiem_tra_chi_tiet_khach_hang($duLieu));

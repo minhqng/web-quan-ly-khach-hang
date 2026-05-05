@@ -37,9 +37,13 @@ if (la_post()) {
     $loi = kiem_tra_du_lieu_tuong_tac($duLieu, false);
 
     if ($loi === []) {
-        cap_nhat_tuong_tac($id, $duLieu);
-        thong_bao_thanh_cong('Đã cập nhật tương tác.');
-        chuyen_huong('khach-hang/chi-tiet.php?id=' . $duLieu['customer_id']);
+        try {
+            cap_nhat_tuong_tac($id, $duLieu);
+            thong_bao_thanh_cong('Đã cập nhật tương tác.');
+            chuyen_huong('khach-hang/chi-tiet.php?id=' . $duLieu['customer_id']);
+        } catch (LoiNghiepVu $exception) {
+            $loi['customer_id'] = $exception->getMessage();
+        }
     }
 
     thong_bao_loi('Vui lòng kiểm tra lại thông tin tương tác.');

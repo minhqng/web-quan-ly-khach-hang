@@ -20,14 +20,19 @@ function tham_so_luu_cong_viec(array $duLieu): array
 
 function tao_cong_viec_theo_doi(array $duLieu): int
 {
-    thuc_thi_lenh(
+    $soDong = thuc_thi_lenh(
         "INSERT INTO follow_up_tasks
             (customer_id, assigned_user_id, created_by, title, description, due_at, status, priority, completed_at)
-         VALUES
-            (:customer_id, :assigned_user_id, :created_by, :title, :description, :due_at, :status, :priority,
-             CASE WHEN :completed_status = 'completed' THEN NOW() ELSE NULL END)",
+         SELECT c.id, :assigned_user_id, :created_by, :title, :description, :due_at, :status, :priority,
+             CASE WHEN :completed_status = 'completed' THEN NOW() ELSE NULL END
+         FROM customers c
+         WHERE c.id = :customer_id AND c.deleted_at IS NULL",
         array_merge(tham_so_luu_cong_viec($duLieu), ['completed_status' => $duLieu['status']])
     );
+
+    if ($soDong === 0) {
+        throw new LoiNghiepVu('Khách hàng không còn hoạt động để tạo công việc theo dõi.');
+    }
 
     return (int) lay_id_vua_tao();
 }
@@ -39,19 +44,35 @@ function cap_nhat_cong_viec_theo_doi(int $id, array $duLieu): void
     $thamSo['completed_status'] = $duLieu['status'];
     $thamSo['id'] = $id;
 
-    thuc_thi_lenh(
-        "UPDATE follow_up_tasks
-         SET customer_id = :customer_id,
-             assigned_user_id = :assigned_user_id,
-             title = :title,
-             description = :description,
-             due_at = :due_at,
-             status = :status,
-             priority = :priority,
-             completed_at = CASE WHEN :completed_status = 'completed' THEN COALESCE(completed_at, NOW()) ELSE NULL END
-         WHERE id = :id",
+    $soDong = thuc_thi_lenh(
+        "UPDATE follow_up_tasks t
+         INNER JOIN customers c ON c.id = :customer_id AND c.deleted_at IS NULL
+         SET t.customer_id = c.id,
+             t.assigned_user_id = :assigned_user_id,
+             t.title = :title,
+             t.description = :description,
+             t.due_at = :due_at,
+             t.status = :status,
+             t.priority = :priority,
+             t.completed_at = CASE WHEN :completed_status = 'completed' THEN COALESCE(t.completed_at, NOW()) ELSE NULL END
+         WHERE t.id = :id",
         $thamSo
     );
+
+    if ($soDong === 0 && !cong_viec_co_the_cap_nhat_voi_khach_hang($id, (int) $duLieu['customer_id'])) {
+        throw new LoiNghiepVu('Khách hàng không còn hoạt động để cập nhật công việc theo dõi.');
+    }
+}
+
+function cong_viec_co_the_cap_nhat_voi_khach_hang(int $id, int $maKhachHang): bool
+{
+    return (int) lay_mot_gia_tri(
+        "SELECT COUNT(*)
+         FROM follow_up_tasks t
+         INNER JOIN customers c ON c.id = :customer_id AND c.deleted_at IS NULL
+         WHERE t.id = :id",
+        ['id' => $id, 'customer_id' => $maKhachHang]
+    ) > 0;
 }
 
 function cap_nhat_trang_thai_cong_viec(int $id, string $trangThai): ?array

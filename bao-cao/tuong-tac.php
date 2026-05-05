@@ -32,7 +32,7 @@ require __DIR__ . '/../giao-dien/dau-trang.php';
     <div>
         <p class="eyebrow">Lịch sử chăm sóc</p>
         <h1 class="page-title">Báo cáo tương tác</h1>
-        <p class="page-subtitle">Theo dõi nhịp chăm sóc khách hàng theo thời gian, kênh liên hệ và nhân viên ghi nhận.</p>
+        <p class="page-subtitle">Theo dõi nhịp chăm sóc khách hàng theo thời gian, kênh liên hệ và nhân viên phụ trách.</p>
     </div>
 </div>
 
@@ -111,15 +111,15 @@ require __DIR__ . '/../giao-dien/dau-trang.php';
 <section class="surface-card report-section">
     <div class="report-section-heading">
         <div>
-            <p class="eyebrow">Nhân viên</p>
-            <h2 class="card-title">Tần suất ghi nhận tương tác</h2>
+                <p class="eyebrow">Nhân viên phụ trách</p>
+                <h2 class="card-title">Tương tác theo khách hàng được phân công</h2>
         </div>
     </div>
     <div class="table-responsive">
         <table class="table align-middle">
             <thead>
                 <tr>
-                    <th>Nhân viên</th>
+                    <th>Nhân viên phụ trách</th>
                     <th>Số tương tác</th>
                     <th>Lần gần nhất</th>
                 </tr>

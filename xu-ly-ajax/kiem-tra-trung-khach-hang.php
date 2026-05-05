@@ -28,12 +28,12 @@ if ($giaTriChuan === '') {
     ]);
 }
 
-$biTrung = khach_hang_bi_trung($truong, $giaTriChuan, $boQuaId, !la_admin());
+$biTrung = khach_hang_bi_trung($truong, $giaTriChuan, $boQuaId);
 
 tra_ve_json([
     'thanh_cong' => true,
     'bi_trung' => $biTrung,
     'thong_bao' => $biTrung
-        ? 'Thông tin này đang được dùng bởi khách hàng khác.'
+        ? 'Thông tin này không thể sử dụng. Vui lòng nhập thông tin khác.'
         : 'Thông tin có thể sử dụng.',
 ]);

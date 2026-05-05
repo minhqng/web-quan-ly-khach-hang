@@ -19,9 +19,13 @@ if (la_post()) {
     $loi = kiem_tra_du_lieu_cong_viec($duLieu);
 
     if ($loi === []) {
-        tao_cong_viec_theo_doi($duLieu);
-        thong_bao_thanh_cong('Đã tạo công việc theo dõi.');
-        chuyen_huong('cong-viec-theo-doi/');
+        try {
+            tao_cong_viec_theo_doi($duLieu);
+            thong_bao_thanh_cong('Đã tạo công việc theo dõi.');
+            chuyen_huong('cong-viec-theo-doi/');
+        } catch (LoiNghiepVu $exception) {
+            $loi['customer_id'] = $exception->getMessage();
+        }
     }
 
     thong_bao_loi('Vui lòng kiểm tra lại thông tin công việc.');

@@ -1,7 +1,7 @@
 # Full-System Audit Fix Plan
 
 ## Status
-- In progress
+- Complete
 
 ## Scope
 - Auth/session correctness for HTML and JSON endpoints.
@@ -26,10 +26,13 @@
 - Dashboard Top 3 excludes inactive customers.
 
 ## Validation
-- Run PHP lint across all PHP files with `C:\xampp\php\php.exe -l`.
-- Run targeted static searches for remaining weak patterns.
-- If MySQL/Apache are available, smoke test login, dashboard, customer list AJAX, task AJAX, and reports.
+- PHP lint passed for all 93 PHP files with `C:\xampp\php\php.exe -l`.
+- JS syntax passed for all 6 files in `tai-nguyen/js/`.
+- Authenticated smoke passed for login, dashboard, customer AJAX, duplicate AJAX, and all report pages.
+- File exposure check passed: `nhat-ky/.htaccess` returns 403 and stale throttle JSON is absent.
+- Business guards passed for soft-deleted customer task/interaction create and update paths.
+- Final code review found no severe auth/session/AJAX/dashboard/report/customer workflow regressions.
 
 ## Unresolved Questions
 - Whether demo credentials must remain visible on public/shared hosting.
-- Whether report staff filters should mean owner or actor in every future report; current fix will label owner semantics clearly.
+- Future report features should keep staff filter semantics explicit; current report uses assigned-owner semantics.

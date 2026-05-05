@@ -140,19 +140,29 @@ function lay_tuong_tac_theo_loai_bao_cao(array $boLoc = []): array
 
 function lay_tuong_tac_theo_nhan_vien_bao_cao(array $boLoc = []): array
 {
-    $loc = dieu_kien_loc_khach_hang_bao_cao($boLoc, 'c', 'staff_interaction');
+    $boLocKhach = $boLoc;
+    $boLocKhach['staff_id'] = 0;
+    $loc = dieu_kien_loc_khach_hang_bao_cao($boLocKhach, 'c', 'staff_interaction');
     $ngay = dieu_kien_ngay_bao_cao($boLoc, 'i.interaction_at', 'staff_interaction');
+    $locNhanVienSql = '';
+    $thamSoNhanVien = [];
+
+    if ((int) ($boLoc['staff_id'] ?? 0) > 0) {
+        $locNhanVienSql = ' AND u.id = :staff_interaction_user_id';
+        $thamSoNhanVien['staff_interaction_user_id'] = (int) $boLoc['staff_id'];
+    }
+
     return lay_nhieu_dong(
         "SELECT u.full_name AS staff_name,
-            COUNT(c.id) AS total,
-            MAX(CASE WHEN c.id IS NOT NULL THEN i.interaction_at ELSE NULL END) AS last_interaction_at
+            COUNT(i.id) AS total,
+            MAX(i.interaction_at) AS last_interaction_at
          FROM users u
-         LEFT JOIN interactions i ON i.user_id = u.id{$ngay['sql']}
-         LEFT JOIN customers c ON c.id = i.customer_id AND c.deleted_at IS NULL{$loc['sql']}
-          WHERE u.role = 'staff' AND u.status = 'active'
-          GROUP BY u.id, u.full_name
-          ORDER BY total DESC, u.full_name ASC",
-        $loc['tham_so'] + $ngay['tham_so']
+         LEFT JOIN customers c ON c.assigned_user_id = u.id AND c.deleted_at IS NULL{$loc['sql']}
+         LEFT JOIN interactions i ON i.customer_id = c.id{$ngay['sql']}
+          WHERE u.role = 'staff' AND u.status = 'active'{$locNhanVienSql}
+           GROUP BY u.id, u.full_name
+           ORDER BY total DESC, u.full_name ASC",
+        $loc['tham_so'] + $ngay['tham_so'] + $thamSoNhanVien
     );
 }
 

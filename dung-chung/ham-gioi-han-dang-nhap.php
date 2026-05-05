@@ -44,7 +44,7 @@ function khoa_thu_dang_nhap(string $taiKhoan): string
 
 function xu_ly_kho_thu_dang_nhap(callable $capNhat): mixed
 {
-    $duongDan = THU_MUC_GOC . '/nhat-ky/dang-nhap-that-bai.json';
+    $duongDan = duong_dan_kho_thu_dang_nhap();
     $thuMuc = dirname($duongDan);
 
     if (!is_dir($thuMuc)) {
@@ -76,6 +76,15 @@ function xu_ly_kho_thu_dang_nhap(callable $capNhat): mixed
         flock($tep, LOCK_UN);
         fclose($tep);
     }
+}
+
+function duong_dan_kho_thu_dang_nhap(): string
+{
+    return rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR)
+        . DIRECTORY_SEPARATOR
+        . 'quanly_khachhang'
+        . DIRECTORY_SEPARATOR
+        . 'dang-nhap-that-bai.json';
 }
 
 function loc_thu_dang_nhap_con_han(array $duLieu): array

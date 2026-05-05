@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+final class LoiNghiepVu extends RuntimeException
+{
+}
+
 function e(mixed $giaTri): string
 {
     return htmlspecialchars((string) ($giaTri ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
