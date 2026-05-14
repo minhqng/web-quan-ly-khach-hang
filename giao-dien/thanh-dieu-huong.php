@@ -6,10 +6,10 @@
         </a>
         <div class="navbar-actions">
             <?php if (da_dang_nhap()): ?>
-                <?php $nguoiDung = nguoi_dung_hien_tai(); ?>
-                <?php $vaiTro = ($nguoiDung['vai_tro'] ?? '') === VAI_TRO_ADMIN ? 'Quản trị' : 'Nhân viên'; ?>
-                <span class="navbar-user"><?= e($nguoiDung['ho_ten'] ?: $nguoiDung['ten_dang_nhap']) ?></span>
-                <span class="navbar-role"><?= e($vaiTro) ?></span>
+                <?php $nguoiDungNavbar = nguoi_dung_hien_tai(); ?>
+                <?php $vaiTroNavbar = ($nguoiDungNavbar['vai_tro'] ?? '') === VAI_TRO_ADMIN ? 'Quản trị' : 'Nhân viên'; ?>
+                <span class="navbar-user"><?= e($nguoiDungNavbar['ho_ten'] ?: $nguoiDungNavbar['ten_dang_nhap']) ?></span>
+                <span class="navbar-role"><?= e($vaiTroNavbar) ?></span>
                 <form class="d-inline" method="post" action="<?= e(duong_dan('dang-xuat.php')) ?>">
                     <?= csrf_input() ?>
                     <button class="btn btn-outline-light btn-sm" type="submit">Đăng xuất</button>

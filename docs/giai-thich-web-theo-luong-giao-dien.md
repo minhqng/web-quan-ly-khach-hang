@@ -16,7 +16,11 @@ Phạm vi bao phủ:
 - Quản trị: loại khách hàng, người dùng, chi tiết người dùng, đổi mật khẩu.
 - JavaScript/AJAX làm giao diện động.
 
-Ghi chú: máy hiện không kết nối được `http://localhost/quanly_khachhang/`, nên tài liệu được đối chiếu trực tiếp từ mã nguồn.
+Ghi chú kiểm tra thực tế:
+
+- Đã đăng nhập bằng tài khoản admin demo và crawl các route chính trên `http://localhost/quanly_khachhang/`.
+- Các trang chính trả HTTP 200 và render đúng cấu trúc đã mô tả.
+- Trong quá trình kiểm tra từng phát hiện trang `nguoi-dung/chi-tiet.php?id=1` bị warning/fatal do biến `$nguoiDung` của trang bị navbar ghi đè; lỗi đã được sửa bằng cách đổi biến trong navbar sang `$nguoiDungNavbar`.
 
 ## Luồng Vào Web
 
@@ -641,6 +645,7 @@ URL: `nguoi-dung/chi-tiet.php?id=...`
 - Header họ tên, username, email và nút Quay lại/Sửa/Đổi mật khẩu: `nguoi-dung/chi-tiet.php:24-35`.
 - KPI khách phụ trách, tương tác đã ghi, việc đang mở: `:37-50`.
 - Hồ sơ đăng nhập: vai trò, phone, last login, ngày tạo, cập nhật, trạng thái: `:52-67`.
+- Kiểm tra web thực tế ngày 14/05/2026: lỗi biến `$nguoiDung` bị navbar ghi đè đã được xử lý trong `giao-dien/thanh-dieu-huong.php` bằng biến riêng `$nguoiDungNavbar`, nên trang chi tiết người dùng giữ đúng dữ liệu lấy theo `id`.
 
 ### Trang Đổi Mật Khẩu
 
@@ -690,6 +695,22 @@ URL: `dang-xuat.php`
 - Mọi nút có `data-confirm-message` sẽ hiện xác nhận trước khi submit.
 - Vị trí dùng: xóa mềm khách hàng, xóa tương tác, xóa/ngừng dùng loại khách hàng.
 
+### Khởi Tạo AJAX Khách Hàng
+
+- Code: `tai-nguyen/js/ajax-khach-hang.js:1-5`.
+- Khi DOM sẵn sàng, gọi `initDuplicateChecks()` cho form khách hàng và `initCustomerListAjax()` cho danh sách khách hàng nếu các hàm tồn tại.
+- Helper `appBaseUrl()`: `tai-nguyen/js/ajax-khach-hang.js:7-9`, lấy base URL từ `window.APP_BASE_URL`.
+- Helper `textElement()`: `tai-nguyen/js/ajax-khach-hang.js:11-15`, tạo element text an toàn khi render row bằng JS.
+- Helper `readJsonResponse()`: `tai-nguyen/js/ajax-khach-hang.js:17-25`, đọc response và báo lỗi nếu server trả về JSON không hợp lệ.
+- Helper `debounce()`: `tai-nguyen/js/ajax-khach-hang.js:27-33`, giảm số lần gọi AJAX khi gõ tìm kiếm.
+
+### Render Dòng Khách Hàng Bằng JS
+
+- Code: `tai-nguyen/js/ajax-khach-hang-dong.js:1-103`.
+- `createCustomerRow()` tạo `<tr>` mới cho bảng khách hàng sau khi lọc AJAX.
+- Các khối nhỏ gồm tên khách/lịch tới, liên hệ, chip loại khách, badge trạng thái và cụm nút thao tác.
+- Form Khôi phục/Xóa mềm được tạo kèm CSRF từ `window.APP_CSRF_TOKEN`.
+
 ## Endpoint AJAX Không Render Trang Nhưng Tác Động Giao Diện
 
 ### Lọc Khách Hàng
@@ -697,6 +718,12 @@ URL: `dang-xuat.php`
 - Endpoint: `xu-ly-ajax/loc-khach-hang.php`.
 - JS gọi tại `tai-nguyen/js/ajax-khach-hang-danh-sach.js:35`.
 - Cập nhật bảng, tổng số, phân trang, URL query.
+
+### Tìm Kiếm Khách Hàng Nhanh
+
+- Endpoint: `xu-ly-ajax/tim-kiem-khach-hang.php`.
+- Dùng chung response builder `tao_phan_hoi_ajax_danh_sach_khach_hang()`.
+- Khác `loc-khach-hang.php` ở chỗ ép `customer_type_id = 0`, `assigned_user_id = 0`, `status = ''`, tức chỉ giữ trọng tâm tìm kiếm theo từ khóa/trang hiện tại.
 
 ### Kiểm Tra Trùng Khách Hàng
 
@@ -709,6 +736,12 @@ URL: `dang-xuat.php`
 - Endpoint: `xu-ly-ajax/cap-nhat-trang-thai-cong-viec.php`.
 - JS gọi tại `tai-nguyen/js/ajax-cong-viec-theo-doi.js:22`.
 - Cập nhật badge, class dòng, nút hoàn thành, hoặc xóa dòng khỏi tab hiện tại nếu không còn phù hợp.
+
+### Phản Hồi JSON Và Bảo Vệ Phiên
+
+- Code: `xu-ly-ajax/phan-hoi-json.php:5-11` đặt HTTP status, header JSON UTF-8 và in JSON.
+- Code: `xu-ly-ajax/phan-hoi-json.php:15-34` chặn AJAX khi session hết hạn, chưa đăng nhập, hoặc tài khoản đã đổi trạng thái.
+- Code: `xu-ly-ajax/phan-hoi-json.php:36` cập nhật thời điểm hoạt động phiên.
 
 ## Bản Đồ Route Nhanh
 
@@ -745,4 +778,4 @@ URL: `dang-xuat.php`
 
 ## Unresolved Questions
 
-- Chưa xác nhận được giao diện bằng trình duyệt vì `http://localhost/quanly_khachhang/` không kết nối được tại thời điểm viết tài liệu.
+- Không còn câu hỏi mở.
